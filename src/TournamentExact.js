@@ -3,6 +3,7 @@ import React from 'react'
 //we'll assume we'll have only necessary players for now (8 players as a starter)
 //other possibilities 2,4,8,16,32,64...
 
+//array shuffle herlper
 function shuffleArray(array) {
     for (var i = array.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
@@ -12,12 +13,12 @@ function shuffleArray(array) {
     }
 }
 
+//main component
 const TournamentExact = (props) => {
 
     class Score {
-        constructor(player1, player1Score,player2, player2Score) {
+        constructor(player1Score, player2Score) {
             this.data = {
-                players: [player1,player2],
                 points: [player1Score,player2Score]
             }
         }
@@ -33,6 +34,9 @@ const TournamentExact = (props) => {
         fillPlayers(player1, player2) {
             this.players = [player1,player2]
             this.id = player1+player2
+        }
+        pushScore(player1Score, player2Score) {
+            this.scores.push(new Score(player1Score,player2Score))
         }
     }
 
@@ -72,8 +76,6 @@ const TournamentExact = (props) => {
     for (let k = 0; k < players.length; k += 2) {
         bracket[0][k/2].fillPlayers(players[k], players[k+1])
     }
-
-    console.log(bracket)
 
     return (
         <div>
