@@ -4,9 +4,21 @@ import './App.css';
 
 
 function App() {
+
+  const players = [
+    "playera",
+    "playerb",
+    "playerc",
+    "playerd",
+    "playere",
+    "playerf",
+    "playerg",
+    "playerh"
+  ]
+
   return (
     <div>
-      <TournamentExact/>
+      <TournamentExact players={players}/>
     </div>
   );
 }
