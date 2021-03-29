@@ -82,13 +82,19 @@ const TournamentExact = (props) => {
         setBracket(newBracket)
     },[])
 
-    
+    const handleSetScore = (crd,player1Score,player2Score) => {
+        const copy = [...bracket]
+        copy[crd[0]][crd[1]].setScore(player1Score,player2Score,copy)
+        setBracket(copy)
+    }
 
     console.log(bracket)
 
     return (
         <div>
-            Hello
+            <button onClick={() => handleSetScore([0,0],1,0)}>1</button>
+            <button onClick={() => handleSetScore([0,1],0,1)}>2</button>
+            <button onClick={() => handleSetScore([0,2],1,0)}>3</button>
         </div>
     )
 }
