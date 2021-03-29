@@ -30,9 +30,13 @@ const TournamentExact = (props) => {
             this.round = round
             this.scores = [] //array of instances of Score
         }
+        fillPlayers(player1, player2) {
+            this.players = [player1,player2]
+            this.id = player1+player2
+        }
     }
 
-    const players = [ // will be a props
+    const players = [ // will be a prop
         "playera",
         "playerb",
         "playerc",
@@ -53,18 +57,23 @@ const TournamentExact = (props) => {
         length = length / 2
     } while (length >= 2)
 
-    //pre-initializing rounds
+    //pre-initializing rounds and empty matches instances
     const bracket = []
+    length = players.length
     for (let i = 0; i < countRounds; i++) {
         bracket.push([])
-    }
-    
-    //filling 1st round with Match instances
-    players.forEach((e,idx) => {
-        if (idx % 2 === 0) { 
-            bracket[0].push(new Match(e,players[idx + 1],0,e + players[idx + 1]))
+        for (let j = 0; j < length / 2; j++) {
+            bracket[i].push(new Match(undefined,undefined,i,undefined))
         }
-    })
+        length = length / 2
+    }
+
+    //filling 1st round with players
+    for (let k = 0; k < players.length; k += 2) {
+        bracket[0][k/2].fillPlayers(players[k], players[k+1])
+    }
+
+    console.log(bracket)
 
     return (
         <div>
