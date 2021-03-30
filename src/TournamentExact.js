@@ -42,8 +42,8 @@ class Match  {
 const Game = (props) => {
     return (
         <div className="games">
-            <div>{props.player1}</div>
-            <div>{props.player2}</div>
+            <div onClick={() => props.handleSetScore(props.crd,1,0)}>{props.player1}</div>
+            <div onClick={() => props.handleSetScore(props.crd,0,1)}>{props.player2}</div>
         </div>
     )
 }
@@ -95,7 +95,7 @@ const TournamentExact = (props) => {
     const renderBracket = bracket.map((e,i) => (
         <div className="rounds" key={i}>
             {e.map((f,j) => (
-                <Game player1={f.players[0]} player2={f.players[1]}/>
+                <Game player1={f.players[0]} player2={f.players[1]} crd={[i,j]} handleSetScore={(crd,score1,score2) => handleSetScore(crd,score1,score2)}/>
             ))}
         </div>
     ))
