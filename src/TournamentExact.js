@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import './App.css'
 
 //we'll assume we'll have only necessary players for now (8 players as a starter)
 //other possibilities 2,4,8,16,32,64...
@@ -13,13 +14,13 @@ const shuffleArray = (array) => {
     }
 }
 
-//class
+//class to create Match instances thorough the bracket
 class Match  {
     constructor(roundNumber,matchNumber) { //player1 might be team1 too, using a teamID might be relevant as both will be concatenated to create the match id
         this.id = undefined
         this.crd = [roundNumber,matchNumber]
         this.players = [undefined,undefined]
-        this.score = null //instances of Score, will be an array of scores in more complex tournament instances
+        this.score = undefined //instances of Score, will be an array of scores in more complex tournament instances
     }
     fillPlayers(playersList) {
         this.players = [playersList[0],playersList[1]]
@@ -37,18 +38,21 @@ class Match  {
     }
 }
 
+//subcomponent
+const Game = (props) => {
+    return (
+        <div className="games">
+            <div>{props.player1}</div>
+            <div>{props.player2}</div>
+        </div>
+    )
+}
+
 //main component
 const TournamentExact = (props) => {
 
     const [bracket, setBracket] = useState([])
     const [players,setPlayers] = useState([])
-
-    //bracket navigation helper
-    //const sendToNextMatch = (currentMatchCrd) => {
-    //    const match = bracket[currentMatchCrd[0]][currentMatchCrd[1]]
-    //    const winningPlayerIndex = match.score.findIndex(e => e === Math.max(...match.score))
-    //    bracket[currentMatchCrd[0]+1][Math.floor(currentMatchCrd[1]/2)].receiveOnePlayer(match.players[winningPlayerIndex])
-    //}
 
     useEffect(() => {
 
@@ -88,14 +92,20 @@ const TournamentExact = (props) => {
         setBracket(copy)
     }
 
-    console.log(bracket)
+    const renderBracket = bracket.map((e,i) => (
+        <div className="rounds" key={i}>
+            {e.map((f,j) => (
+                <Game player1={f.players[0]} player2={f.players[1]}/>
+            ))}
+        </div>
+    ))
+    
 
     return (
-        <div>
-            <button onClick={() => handleSetScore([0,0],1,0)}>1</button>
-            <button onClick={() => handleSetScore([0,1],0,1)}>2</button>
-            <button onClick={() => handleSetScore([0,2],1,0)}>3</button>
+        <div className="bracket">
+            {renderBracket}
         </div>
+        
     )
 }
 
