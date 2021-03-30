@@ -49,9 +49,9 @@
 .rounds {
   display: flex;
   flex-direction: column;
+  margin: 40px;
   align-items: center;
   justify-content: space-evenly;
-  margin: 40px;
 }
 
 .games {
@@ -59,11 +59,22 @@
   background-color: #67D7A8;
   margin-top: 10px;
   margin-bottom: 10px;
+  border: 1px solid black;
+  border-radius: 10px;
 }
 
 .games div {
-  border: 1px solid black;
   text-align: center;
   padding: 5px;
   height: 20px;
+}
+
+.winnerOverlay {
+  position:absolute;
+  top: 30%;
+  left: 30%;
+  width: 200px;
+  height: 50px;
+  text-align: center;
+  background-color: blanchedalmond;
 }

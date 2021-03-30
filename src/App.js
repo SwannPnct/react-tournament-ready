@@ -19,7 +19,7 @@ function App() {
 
   return (
     <div>
-      <TournamentExact players={randomPlayerDB(32)}/>
+      <TournamentExact players={randomPlayerDB(8)}/>
     </div>
   );
 }

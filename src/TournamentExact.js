@@ -48,11 +48,24 @@ const Game = (props) => {
     )
 }
 
+const WinnerOverlay = (props) => {
+    return (
+        <div className="winnerOverlay">
+            Winner is {props.winner}
+            <br></br>
+            <button onClick={props.onOkay}>Okay</button>
+        </div>
+    )
+}
+
 //main component
 const TournamentExact = (props) => {
 
     const [bracket, setBracket] = useState([])
     const [players,setPlayers] = useState([])
+
+    const [winnerOverlay, setWinnerOverlay] = useState(false)
+    const [winner, setWinner] = useState("")
 
     useEffect(() => {
 
@@ -87,9 +100,18 @@ const TournamentExact = (props) => {
     },[])
 
     const handleSetScore = (crd,player1Score,player2Score) => {
+        if (crd[0] === bracket.length - 1) {
+            setWinnerOverlay(true)
+            setWinner(bracket[crd[0]][crd[1]].players[player1Score > player2Score ? 0 : 1])
+            return
+        }
         const copy = [...bracket]
         copy[crd[0]][crd[1]].setScore(player1Score,player2Score,copy)
         setBracket(copy)
+    }
+
+    const handleOkayOverlay = () => {
+        setWinnerOverlay(false)
     }
 
     const renderBracket = bracket.map((e,i) => (
@@ -104,6 +126,7 @@ const TournamentExact = (props) => {
     return (
         <div className="bracket">
             {renderBracket}
+            { winnerOverlay ? <WinnerOverlay onOkay={handleOkayOverlay} winner={winner}/> : null}
         </div>
         
     )
