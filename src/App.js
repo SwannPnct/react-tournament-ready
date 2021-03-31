@@ -24,15 +24,24 @@ function App() {
 
   const handleGetMatchData = (data) => {
     setCurrentMatchData(data)
-    console.log(data)
+    console.log("match id")
+    console.log(data?.id)
+  }
+
+  const handleSetUserScore = () => {
+    setLastScore({
+      score: 1
+    })
   }
 
   return (
     <div>
+      <button onClick={handleSetUserScore}>Player win</button>
       <TournamentExact 
         player={players[0]} //{name:... , id:...}
         players={players} //array of player objects, including user ('player')
         getMatchData={(data) => handleGetMatchData(data)} //current matchID of user
+        insertScore = {lastScore} //{score} >> it has to be an object, even with 1 key
       />
     </div>
   );

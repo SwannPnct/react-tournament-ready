@@ -28,8 +28,8 @@ class Match  {
         this.id = playersList[0].id+playersList[1].id
     }
     receiveOnePlayer(player) {
-        this.players[this.players.findIndex(e => !e)] = player // for now we'll just fill the player position by order of receiving ( 1st player to go forward we'll be in the upper position)
-        if (this.players.findIndex(e => !e) === -1) this.id = this.players[0] + this.players[1]
+        this.players[this.players.findIndex(e => !e.id)] = player // for now we'll just fill the player position by order of receiving ( 1st player to go forward we'll be in the upper position)
+        if (this.players.findIndex(e => !e.id) === -1) this.id = this.players[0].id + this.players[1].id
     }
     setScore(player1Score, player2Score, wholeBracket) {
         if (this.isDone) return
@@ -106,6 +106,26 @@ const TournamentExact = (props) => {
         handleSendMatchData()
     },[bracket])
 
+    useEffect(() => {
+        if (!props.insertScore) return
+        const {score} = props.insertScore
+        const match = handleFindMatchByPlayerID(props.player.id)
+        const playerIndex = match.players.findIndex(e => e.id === props.player.id)
+        playerIndex === 0 ? handleSetScore([...match.crd],score,0) : handleSetScore([...match.crd],0,score)
+    },[props.insertScore])
+
+    //helper to find match with player id > might be ext out of component in a helper file
+    const handleFindMatchByPlayerID = (playerID) => {
+        //this should work with a reversed bracket, not a normal order one, i really dont get it, but well, it works
+        let matchData = null
+        bracket.forEach((e) => {
+            e.forEach(f => {
+                if (f.players.findIndex(j => j.id === playerID) !== -1) return matchData = f
+            })
+        })
+        return matchData
+    }
+
     //setting score on both side of the game >> will be completed by a checking when both players are entering a score
     const handleSetScore = (crd,player1Score,player2Score) => {
         if (crd[0] === bracket.length - 1) {
@@ -125,16 +145,8 @@ const TournamentExact = (props) => {
 
     //sending matchid to parent comp
     const handleSendMatchData = () => {
-        const bracketReversed = [...bracket].reverse()
-        let matchData = null
-        bracketReversed.forEach(e => {
-            e.forEach(f => {
-                if (f.players.findIndex(j => j.id === props.player.id) !== -1) return matchData = f
-            })
-        })
-        props.getMatchData(matchData)
+        props.getMatchData(handleFindMatchByPlayerID(props.player.id))
     }
-
 
     //rendering functions
     const renderBracket = bracket.map((e,i) => (
