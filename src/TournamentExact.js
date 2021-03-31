@@ -21,29 +21,33 @@ class Match  {
         this.crd = [roundNumber,matchNumber]
         this.players = [undefined,undefined]
         this.score = undefined //instances of Score, will be an array of scores in more complex tournament instances
+        this.isDone = false
     }
     fillPlayers(playersList) {
         this.players = [playersList[0],playersList[1]]
-        this.id = playersList[0]+playersList[1]
+        this.id = playersList[0].id+playersList[1].id
     }
     receiveOnePlayer(player) {
         this.players[this.players.findIndex(e => !e)] = player // for now we'll just fill the player position by order of receiving ( 1st player to go forward we'll be in the upper position)
         if (this.players.findIndex(e => !e) === -1) this.id = this.players[0] + this.players[1]
     }
     setScore(player1Score, player2Score, wholeBracket) {
+        if (this.isDone) return
+
         this.score = [player1Score,player2Score]
-        
         //sending to next match if score is full, in this use case, it always is after one game >> replacing sendToNextMatch()
         wholeBracket[this.crd[0]+1][Math.floor(this.crd[1]/2)].receiveOnePlayer(player1Score > player2Score ? this.players[0] : this.players[1]) // will have to make a copy of the bracket to use it as a parameter then only setting the bracket with the modified copy
+        this.isDone = true
     }
 }
 
 //subcomponent
 const Game = (props) => {
+    console.log(props)
     return (
         <div className="games">
-            <div onClick={() => props.handleSetScore(props.crd,1,0)}>{props.player1}</div>
-            <div onClick={() => props.handleSetScore(props.crd,0,1)}>{props.player2}</div>
+            <div onClick={() => props.handleSetScore(props.crd,1,0)}>{props.player1 ? props.player1.name : "TDB"}</div>
+            <div onClick={() => props.handleSetScore(props.crd,0,1)}>{props.player2 ? props.player2.name : "TBD"}</div>
         </div>
     )
 }
