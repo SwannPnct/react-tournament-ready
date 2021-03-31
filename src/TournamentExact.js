@@ -17,10 +17,10 @@ const shuffleArray = (array) => {
 //class to create Match instances thorough the bracket
 class Match  {
     constructor(roundNumber,matchNumber) { //player1 might be team1 too, using a teamID might be relevant as both will be concatenated to create the match id
-        this.id = undefined
+        this.id = null
         this.crd = [roundNumber,matchNumber]
-        this.players = [undefined,undefined]
-        this.score = undefined //instances of Score, will be an array of scores in more complex tournament instances
+        this.players = [{name:null,id: null},{name:null,id: null}]
+        this.score = null //instances of Score, will be an array of scores in more complex tournament instances
         this.isDone = false
     }
     fillPlayers(playersList) {
@@ -43,7 +43,6 @@ class Match  {
 
 //subcomponent
 const Game = (props) => {
-    console.log(props)
     return (
         <div className="games">
             <div onClick={() => props.handleSetScore(props.crd,1,0)}>{props.player1 ? props.player1.name : "TDB"}</div>
@@ -103,6 +102,11 @@ const TournamentExact = (props) => {
         setBracket(newBracket)
     },[])
 
+    useEffect(() => {
+        handleSendMatchData()
+    },[bracket])
+
+    //setting score on both side of the game >> will be completed by a checking when both players are entering a score
     const handleSetScore = (crd,player1Score,player2Score) => {
         if (crd[0] === bracket.length - 1) {
             setWinnerOverlay(true)
@@ -114,14 +118,35 @@ const TournamentExact = (props) => {
         setBracket(copy)
     }
 
+    //hiding winner overlay, might add other func to reset bracket or send an info to parent comp
     const handleOkayOverlay = () => {
         setWinnerOverlay(false)
     }
 
+    //sending matchid to parent comp
+    const handleSendMatchData = () => {
+        const bracketReversed = [...bracket].reverse()
+        let matchData = null
+        bracketReversed.forEach(e => {
+            e.forEach(f => {
+                if (f.players.findIndex(j => j.id === props.player.id) !== -1) return matchData = f
+            })
+        })
+        props.getMatchData(matchData)
+    }
+
+
+    //rendering functions
     const renderBracket = bracket.map((e,i) => (
         <div className="rounds" key={i}>
             {e.map((f,j) => (
-                <Game player1={f.players[0]} player2={f.players[1]} crd={[i,j]} handleSetScore={(crd,score1,score2) => handleSetScore(crd,score1,score2)}/>
+                <Game 
+                    player1={f.players[0]} 
+                    player2={f.players[1]} 
+                    crd={[i,j]} 
+                    handleSetScore={(crd,score1,score2) => handleSetScore(crd,score1,score2)}
+                    key={i+j}
+                />
             ))}
         </div>
     ))

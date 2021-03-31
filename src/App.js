@@ -1,6 +1,7 @@
 import TournamentExact from './TournamentExact'
 
 import './App.css';
+import { useState } from 'react';
 
 //helper to create a player DB > for development only
 const randomPlayerDB = (count) => {
@@ -18,9 +19,21 @@ const players = randomPlayerDB(8)
 
 function App() {
 
+  const [currentMatchData, setCurrentMatchData] = useState("")
+  const [lastScore, setLastScore] = useState(null)
+
+  const handleGetMatchData = (data) => {
+    setCurrentMatchData(data)
+    console.log(data)
+  }
+
   return (
     <div>
-      <TournamentExact player={players[0]} players={players}/>
+      <TournamentExact 
+        player={players[0]} //{name:... , id:...}
+        players={players} //array of player objects, including user ('player')
+        getMatchData={(data) => handleGetMatchData(data)} //current matchID of user
+      />
     </div>
   );
 }
