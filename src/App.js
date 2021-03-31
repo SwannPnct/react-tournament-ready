@@ -19,13 +19,18 @@ const players = randomPlayerDB(8)
 
 function App() {
 
-  const [currentMatchData, setCurrentMatchData] = useState("")
+  const [currentMatchData, setCurrentMatchData] = useState(null)
+  const [bracketData, setBracketData] = useState(null)
   const [lastScore, setLastScore] = useState(null)
 
   const handleGetMatchData = (data) => {
     setCurrentMatchData(data)
-    console.log("match id")
-    console.log(data?.id)
+  }
+
+  const handleGetBracketData = (data) => {
+    setBracketData(data)
+    console.log("data")
+    console.log(data)
   }
 
   const handleSetUserScore = () => {
@@ -42,6 +47,7 @@ function App() {
         players={players} //array of player objects, including user ('player')
         getMatchData={(data) => handleGetMatchData(data)} //current matchID of user
         insertScore = {lastScore} //{score} >> it has to be an object, even with 1 key
+        getBracketData={(data) => handleGetBracketData(data)} //self-expl, use to backup the bracket data or to share via sockets
       />
     </div>
   );

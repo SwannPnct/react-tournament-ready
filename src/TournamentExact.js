@@ -104,7 +104,9 @@ const TournamentExact = (props) => {
     },[])
 
     useEffect(() => {
+        if (bracket.length === 0) return
         handleSendMatchData()
+        handleSendBracketData()
     },[bracket])
 
     useEffect(() => {
@@ -144,9 +146,14 @@ const TournamentExact = (props) => {
         setWinnerOverlay(false)
     }
 
-    //sending matchid to parent comp
+    //sending match data to parent comp
     const handleSendMatchData = () => {
         props.getMatchData(handleFindMatchByPlayerID(props.player.id))
+    }
+
+    //sending bracket data to parent comp
+    const handleSendBracketData = () => {
+        props.getBracketData(bracket)
     }
 
     //rendering functions
