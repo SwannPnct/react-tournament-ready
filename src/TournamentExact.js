@@ -67,6 +67,7 @@ const TournamentExact = (props) => {
     const [bracket, setBracket] = useState([])
     const [players,setPlayers] = useState([])
 
+    //winning overlay, will be a facultative bool on comp props, user can also extract bracket data and decide action on winner
     const [winnerOverlay, setWinnerOverlay] = useState(false)
     const [winner, setWinner] = useState("")
 
@@ -130,7 +131,7 @@ const TournamentExact = (props) => {
     const handleSetScore = (crd,player1Score,player2Score) => {
         if (crd[0] === bracket.length - 1) {
             setWinnerOverlay(true)
-            setWinner(bracket[crd[0]][crd[1]].players[player1Score > player2Score ? 0 : 1])
+            setWinner(bracket[crd[0]][crd[1]].players[player1Score > player2Score ? 0 : 1].name)
             return
         }
         const copy = [...bracket]
