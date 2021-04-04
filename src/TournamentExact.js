@@ -14,14 +14,28 @@ const shuffleArray = (array) => {
     }
 }
 
+ //multi dimensional array deep copy helper
+ const copyBracket = (bracket) => {
+    const copy = []
+    bracket.forEach((round,idx) => {
+        copy.push([])
+        round.forEach((match,idx2) => {
+            const {players,id,score,isDone} = match
+            const playersCopy = players.map(player => {return {...player}})
+            copy[idx].push(new Match(idx,idx2,id,playersCopy,score ? [...score] : null,isDone))
+        })
+    })
+    return copy
+}
+
 //class to create Match instances thorough the bracket
 class Match  {
-    constructor(roundNumber,matchNumber) { //player1 might be team1 too, using a teamID might be relevant as both will be concatenated to create the match id
-        this.id = null
+    constructor(roundNumber,matchNumber,id,players,score,isDone) { //player1 might be team1 too, using a teamID might be relevant as both will be concatenated to create the match id
+        this.id = id ? id : null
         this.crd = [roundNumber,matchNumber]
-        this.players = [{name:null,id: null},{name:null,id: null}]
-        this.score = null //instances of Score, will be an array of scores in more complex tournament instances
-        this.isDone = false
+        this.players = players ? players : [{name:null,id: null},{name:null,id: null}]
+        this.score = score ? score : null //instances of Score, will be an array of scores in more complex tournament instances
+        this.isDone = isDone
     }
     fillPlayers(playersList) {
         this.players = [playersList[0],playersList[1]]
@@ -67,11 +81,24 @@ const TournamentExact = (props) => {
     const [bracket, setBracket] = useState([])
     const [players,setPlayers] = useState([])
 
-    //winning overlay, will be a facultative bool on comp props, user can also extract bracket data and decide action on winner
+    //winning overlay, will be a facultative bool on comp props, user can also extract bracket data and decide action on winning game
     const [winnerOverlay, setWinnerOverlay] = useState(false)
     const [winner, setWinner] = useState("")
 
     useEffect(() => {
+
+        if (props.loadBracketData) { // will be null for testing
+
+            //retrieving the players data and order via the tournament 1st round
+            const playerFromLoad = []
+            props.loadBracketData[0].forEach(e => playerFromLoad.concat(e.players.map(player => {return {...player}})))
+            setPlayers(playerFromLoad)
+
+            //loading the bracket
+            setBracket(props.loadBracketData)
+
+            return
+        }
 
         const copyPlayers = props.players
         shuffleArray(copyPlayers)
@@ -103,6 +130,18 @@ const TournamentExact = (props) => {
         setBracket(newBracket)
     },[])
 
+    useEffect(() => { // FOR TESTING ONLY, loadBracketData shall be used on comp mounting only
+        if (props.loadBracketData) {
+            //retrieving the players data and order via the tournament 1st round
+            const playerFromLoad = []
+            props.loadBracketData[0].forEach(e => playerFromLoad.concat(e.players.map(player => {return {...player}})))
+            setPlayers(playerFromLoad)
+
+            //loading the bracket
+            setBracket(copyBracket(props.loadBracketData))
+        }
+    },[props.loadBracketData])
+
     useEffect(() => {
         if (bracket.length === 0) return
         handleSendMatchData()
@@ -126,11 +165,11 @@ const TournamentExact = (props) => {
                 if (f.players.findIndex(j => j.id === playerID) !== -1) return matchData = f
             })
         })
-        return matchData
+        return {...matchData}
     }
 
     //setting score on both side of the game >> will be completed by a checking when both players are entering a score
-    const handleSetScore = (crd,player1Score,player2Score) => {
+    const handleSetScore = (crd,player1Score,player2Score) => { // in v2, setScore will use the player id
         if (crd[0] === bracket.length - 1) {
             setWinnerOverlay(true)
             setWinner(bracket[crd[0]][crd[1]].players[player1Score > player2Score ? 0 : 1].name)
@@ -153,7 +192,7 @@ const TournamentExact = (props) => {
 
     //sending bracket data to parent comp
     const handleSendBracketData = () => {
-        props.getBracketData(bracket)
+        props.getBracketData(copyBracket(bracket))
     }
 
     //rendering functions
