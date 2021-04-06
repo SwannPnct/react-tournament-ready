@@ -41,17 +41,26 @@ class Match  {
         this.players = [playersList[0],playersList[1]]
         this.id = playersList[0].id+playersList[1].id
     }
-    receiveOnePlayer(player) {
-        this.players[this.players.findIndex(e => !e.id)] = player // for now we'll just fill the player position by order of receiving ( 1st player to go forward we'll be in the upper position)
+    fillOnePlayer(player,from) {
+        if (!from) {
+            this.players[this.players.findIndex(e => !e.id)] = player // for now we'll just fill the player position by order of receiving ( 1st player to go forward we'll be in the upper position)
         if (this.players.findIndex(e => !e.id) === -1) this.id = this.players[0].id + this.players[1].id
+        } else {
+            // here the handling to place player on upper or lower of the new game
+        }
     }
     setScore(player1Score, player2Score, wholeBracket) {
         if (this.isDone) return
 
         this.score = [player1Score,player2Score]
         //sending to next match if score is full, in this use case, it always is after one game >> replacing sendToNextMatch()
-        wholeBracket[this.crd[0]+1][Math.floor(this.crd[1]/2)].receiveOnePlayer(player1Score > player2Score ? this.players[0] : this.players[1]) // will have to make a copy of the bracket to use it as a parameter then only setting the bracket with the modified copy
+        wholeBracket[this.crd[0]+1][Math.floor(this.crd[1]/2)].fillOnePlayer(player1Score > player2Score ? this.players[0] : this.players[1]) // will have to make a copy of the bracket to use it as a parameter then only setting the bracket with the modified copy
         this.isDone = true
+    }
+    reset() {
+        this.id = null
+        this.players = [{name:null,id: null},{name:null,id: null}]
+        this.score = null //instances of Score, will be an array of scores in more complex tournament instances
     }
 }
 
@@ -76,7 +85,7 @@ const WinnerOverlay = (props) => {
 }
 
 //main component
-const TournamentExact = (props) => {
+const Tournament = (props) => {
 
     const [bracket, setBracket] = useState([])
     const [players,setPlayers] = useState([])
@@ -91,7 +100,7 @@ const TournamentExact = (props) => {
 
             //retrieving the players data and order via the tournament 1st round
             const playerFromLoad = []
-            props.loadBracketData[0].forEach(e => playerFromLoad.concat(e.players.map(player => {return {...player}})))
+            props.loadBracketData[0].forEach(e => playerFromLoad.concat(e.players.map(player => {return {...player}}))) // this wont work for complex bracket
             setPlayers(playerFromLoad)
 
             //loading the bracket
@@ -100,22 +109,24 @@ const TournamentExact = (props) => {
             return
         }
 
-        const copyPlayers = props.players
+        const copyPlayers = props.players.map(e => {return {...e}})
         shuffleArray(copyPlayers)
         setPlayers(copyPlayers)
 
         const newBracket = []
-        //counting how may max rounds we have in the tourney
-        let countRounds = 0
-        let length = copyPlayers.length
-        do {
-            countRounds++
-            length = length / 2
-        } while (length >= 2)
+        
+        //counting rounds, we need to find the closest number to 2 power something
+        let rounds = 0
+        let countPlayers = copyPlayers.length
 
+        while (Math.pow(2,rounds) < countPlayers) {
+            rounds++
+        }
+
+        //creating bracket with empty match instance, 1st round (which will have not all matches use, will still be filled entirely with match instances)
         //pre-initializing rounds and empty matches instances
-        length = copyPlayers.length
-        for (let i = 0; i < countRounds; i++) {
+        let length = Math.pow(2,rounds)
+        for (let i = 0; i < rounds; i++) {
             newBracket.push([])
             for (let j = 0; j < length / 2; j++) {
                 newBracket[i].push(new Match(i,j))
@@ -123,10 +134,37 @@ const TournamentExact = (props) => {
             length = length / 2
         }
 
-        //filling 1st round with players
-        for (let k = 0; k < copyPlayers.length; k += 2) {
-            newBracket[0][k/2].fillPlayers([copyPlayers[k], copyPlayers[k+1]])
+        //filling randomly 1st rounds with 1 player
+        //then filling randomly second player
+        //then advancing only the players that are alone in a match
+        // in 1st round, clearing the match with 1 player only by replacing them by empty match instances (necessary for a better UI)
+
+        //fill match of 1st round with 1 player only
+        const playerDBCopy = copyPlayers.map(e => {return {...e}})
+        for (let k = 0; k < newBracket[0].length; k++) {
+            newBracket[0][k].fillOnePlayer({...playerDBCopy[0]})
+            playerDBCopy.shift()
         }
+
+        //filling the games randomly with another player until the remaining players to place are equal to the double of the match filled with 1 player in the 2nd round
+        const matchToPickFrom = []
+        for (let j = 0; j < newBracket[0].length; j++) {
+            matchToPickFrom.push(j)
+        }
+        shuffleArray(matchToPickFrom)
+        let iterator = 0
+        while (playerDBCopy.length !== 0) {
+            newBracket[0][matchToPickFrom[iterator]].fillOnePlayer({...playerDBCopy[0]})
+            playerDBCopy.shift()
+            iterator++
+        }
+
+        //advancing players alone in match in next round and replacing match instances in 1st round with only 1 player with empty match instances
+        newBracket[0].filter(match => match.players.find(player => !player.id)).forEach(match => {
+            match.setScore(1,0,newBracket)
+            match.reset()
+        })
+
         setBracket(newBracket)
     },[])
 
@@ -220,4 +258,4 @@ const TournamentExact = (props) => {
     )
 }
 
-export default TournamentExact
+export default Tournament

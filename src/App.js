@@ -1,4 +1,5 @@
 import TournamentExact from './TournamentExact'
+import Tournament from './Tournament'
 
 import './App.css';
 import { useEffect, useState } from 'react';
@@ -15,7 +16,7 @@ const randomPlayerDB = (count) => {
   }
   return base
 }
-const players = randomPlayerDB(8)
+const players = randomPlayerDB(15)
 
 function App() {
 
@@ -50,7 +51,7 @@ function App() {
     <div>
       <button onClick={handleSetUserScore}>user win</button>
       <button onClick={handleLoadBracketData}>load tournament</button>
-      <TournamentExact 
+      <Tournament 
         player={players[0]} //{name:... , id:...}
         players={players} //array of player objects, including user ('player')
         getMatchData={(data) => handleGetMatchData(data)} //current user match data
