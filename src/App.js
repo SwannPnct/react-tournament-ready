@@ -1,7 +1,7 @@
 import Tournament from './Tournament'
 
 import './App.css';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 //helper to create a player DB > for development only
 const randomPlayerDB = (count) => {

@@ -69,6 +69,7 @@ class Match  {
 }
 
 //subcomponent
+//the onclick event is for testing only
 const Game = (props) => {
     return (
         <div className="games">
@@ -101,14 +102,20 @@ const Tournament = (props) => {
     useEffect(() => {
 
         if (props.loadBracketData) { // will be null for testing
-
             //retrieving the players data and order via the tournament 1st round
-            const playerFromLoad = []
-            props.loadBracketData[0].forEach(e => playerFromLoad.concat(e.players.map(player => {return {...player}}))) // this wont work for complex bracket
-            setPlayers(playerFromLoad)
+            let playersFromLoad = []
+
+            //getting players from 1st round from game that have players only (filter method, could have been done with condition check in for each)
+            props.loadBracketData[0].filter(match => match.players[0].id).forEach(match => playersFromLoad = playersFromLoad.concat(match.players)) // players wont get concatenated
+            //getting players from 2nd round and verifying presence in playersFromLoad to avoid duplicate
+            props.loadBracketData[1].forEach(match => match.players.forEach(player => {
+                if (player.id && playersFromLoad.findIndex(loaded => loaded.id === player.id) === -1) playersFromLoad.push(player)
+            }))
+
+            setPlayers(playersFromLoad.map(e => {return {...e}}))
 
             //loading the bracket
-            setBracket(props.loadBracketData)
+            setBracket(copyBracket(props.loadBracketData))
 
             return
         }
@@ -175,9 +182,16 @@ const Tournament = (props) => {
     useEffect(() => { // FOR TESTING ONLY, loadBracketData shall be used on comp mounting only
         if (props.loadBracketData) {
             //retrieving the players data and order via the tournament 1st round
-            const playerFromLoad = []
-            props.loadBracketData[0].forEach(e => playerFromLoad.concat(e.players.map(player => {return {...player}})))
-            setPlayers(playerFromLoad)
+            let playersFromLoad = []
+
+            //getting players from 1st round from game that have players only (filter method, could have been done with condition check in for each)
+            props.loadBracketData[0].filter(match => match.players[0].id).forEach(match => playersFromLoad = playersFromLoad.concat(match.players)) // players wont get concatenated
+            //getting players from 2nd round and verifying presence in playersFromLoad to avoid duplicate
+            props.loadBracketData[1].forEach(match => match.players.forEach(player => {
+                if (player.id && playersFromLoad.findIndex(loaded => loaded.id === player.id) === -1) playersFromLoad.push(player)
+            }))
+
+            setPlayers(playersFromLoad.map(e => {return {...e}}))
 
             //loading the bracket
             setBracket(copyBracket(props.loadBracketData))
@@ -238,6 +252,7 @@ const Tournament = (props) => {
     }
 
     //rendering functions
+    //handleSetScore prop is for testing only ( related to onclick event)
     const renderBracket = bracket.map((e,i) => (
         <div className="rounds" key={i}>
             {e.map((f,j) => (
