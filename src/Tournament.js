@@ -146,7 +146,7 @@ const Tournament = (props) => {
             playerDBCopy.shift()
         }
 
-        //filling the games randomly with another player until the remaining players to place are equal to the double of the match filled with 1 player in the 2nd round
+        //filling matches with all remaining players
         const matchToPickFrom = []
         for (let j = 0; j < newBracket[0].length; j++) {
             matchToPickFrom.push(j)
