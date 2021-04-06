@@ -1,4 +1,3 @@
-import TournamentExact from './TournamentExact'
 import Tournament from './Tournament'
 
 import './App.css';
@@ -16,7 +15,7 @@ const randomPlayerDB = (count) => {
   }
   return base
 }
-const players = randomPlayerDB(15)
+const players = randomPlayerDB(13)
 
 function App() {
 

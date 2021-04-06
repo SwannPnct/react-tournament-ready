@@ -46,7 +46,11 @@ class Match  {
             this.players[this.players.findIndex(e => !e.id)] = player // for now we'll just fill the player position by order of receiving ( 1st player to go forward we'll be in the upper position)
         if (this.players.findIndex(e => !e.id) === -1) this.id = this.players[0].id + this.players[1].id
         } else {
-            // here the handling to place player on upper or lower of the new game
+            if (from % 2 === 0) {
+                this.players[0] = player
+            } else {
+                this.players[1] = player
+            }
         }
     }
     setScore(player1Score, player2Score, wholeBracket) {
@@ -54,7 +58,7 @@ class Match  {
 
         this.score = [player1Score,player2Score]
         //sending to next match if score is full, in this use case, it always is after one game >> replacing sendToNextMatch()
-        wholeBracket[this.crd[0]+1][Math.floor(this.crd[1]/2)].fillOnePlayer(player1Score > player2Score ? this.players[0] : this.players[1]) // will have to make a copy of the bracket to use it as a parameter then only setting the bracket with the modified copy
+        wholeBracket[this.crd[0]+1][Math.floor(this.crd[1]/2)].fillOnePlayer(player1Score > player2Score ? this.players[0] : this.players[1], this.crd[1]) // will have to make a copy of the bracket to use it as a parameter then only setting the bracket with the modified copy
         this.isDone = true
     }
     reset() {
