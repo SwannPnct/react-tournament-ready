@@ -266,10 +266,16 @@ const Tournament = (props) => {
             ))}
         </div>
     ))
-    
 
+    const bracketStyle ={
+        backgroundColor: "azure",
+        display: "flex",
+        height: bracket[0] ? bracket[0].length * 100 + "px" : "800px",
+        overflow: "scroll"
+    }
+    
     return (
-        <div className="bracket">
+        <div style={bracketStyle}>
             {renderBracket}
             { winnerOverlay ? <WinnerOverlay onOkay={handleOkayOverlay} winner={winner}/> : null}
         </div>

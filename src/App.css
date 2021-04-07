@@ -38,20 +38,12 @@
 }
 
 
-
-.bracket {
-  background-color: azure;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
 .rounds {
   display: flex;
   flex-direction: column;
-  margin: 40px;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content:space-around;
+  margin: 30px;
 }
 
 .games {
