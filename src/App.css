@@ -55,6 +55,13 @@
   border-radius: 10px;
 }
 
+.emptyGames {
+  width: 100px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  opacity: 0%;
+}
+
 .games div {
   text-align: center;
   padding: 5px;

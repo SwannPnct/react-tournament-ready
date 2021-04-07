@@ -72,7 +72,7 @@ class Match  {
 //the onclick event is for testing only
 const Game = (props) => {
     return (
-        <div className="games">
+        <div className={props.crd[0] === 0 && !props.player1.id ? "emptyGames" : "games"}>
             <div onClick={() => props.handleSetScore(props.crd,1,0)}>{props.player1 ? props.player1.name : "TDB"}</div>
             <div onClick={() => props.handleSetScore(props.crd,0,1)}>{props.player2 ? props.player2.name : "TBD"}</div>
         </div>
@@ -179,7 +179,7 @@ const Tournament = (props) => {
         setBracket(newBracket)
     },[])
 
-    useEffect(() => { // FOR TESTING ONLY, loadBracketData shall be used on comp mounting only
+    useEffect(() => { // for sockets ?
         if (props.loadBracketData) {
             //retrieving the players data and order via the tournament 1st round
             let playersFromLoad = []
