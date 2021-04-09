@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './App.css'
 
-//we'll assume we'll have only necessary players for now (8 players as a starter)
-//other possibilities 2,4,8,16,32,64...
+import Game from './Game'
 
 //array shuffle helper
 const shuffleArray = (array) => {
@@ -34,7 +33,7 @@ class Match  {
         this.id = id ? id : null
         this.crd = [roundNumber,matchNumber]
         this.players = players ? players : [{name:null,id: null},{name:null,id: null}]
-        this.score = score ? score : null //instances of Score, will be an array of scores in more complex tournament instances
+        this.score = score ? score : [null,null] //instances of Score, will be an array of scores in more complex tournament instances
         this.isDone = isDone
     }
     fillPlayers(playersList) {
@@ -64,20 +63,11 @@ class Match  {
     reset() {
         this.id = null
         this.players = [{name:null,id: null},{name:null,id: null}]
-        this.score = null //instances of Score, will be an array of scores in more complex tournament instances
+        this.score = [null,null] //instances of Score, will be an array of scores in more complex tournament instances
     }
 }
 
-//subcomponent
-//the onclick event is for testing only
-const Game = (props) => {
-    return (
-        <div className={props.crd[0] === 0 && !props.player1.id ? "emptyGames" : "games"}>
-            <div onClick={() => props.handleSetScore(props.crd,1,0)}>{props.player1 ? props.player1.name : "TDB"}</div>
-            <div onClick={() => props.handleSetScore(props.crd,0,1)}>{props.player2 ? props.player2.name : "TBD"}</div>
-        </div>
-    )
-}
+
 
 const WinnerOverlay = (props) => {
     return (
@@ -251,28 +241,42 @@ const Tournament = (props) => {
         props.getBracketData(copyBracket(bracket))
     }
 
+    //inline styles
+    //bracket inline style to create a dynamic height for the bracket
+    const bracketStyle ={
+        display: "flex",
+        height: bracket[0] ? bracket[0].length * 100 + "px" : "800px",
+        width: 230 * bracket.length + "px",
+        overflow: "scroll"
+    }
+
+    const roundsStyle = {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent:"space-around",
+        margin: "30px"
+    }
+
     //rendering functions
     //handleSetScore prop is for testing only ( related to onclick event)
     const renderBracket = bracket.map((e,i) => (
-        <div className="rounds" key={i}>
+        <div style={roundsStyle} key={i}>
             {e.map((f,j) => (
                 <Game 
-                    player1={f.players[0]} 
-                    player2={f.players[1]} 
+                    players={f.players} 
+                    score = {f.score}
                     crd={[i,j]} 
                     handleSetScore={(crd,score1,score2) => handleSetScore(crd,score1,score2)}
                     key={i+j}
+                    bracketHeight={bracketStyle.height}
+                    bracketWidth={bracketStyle.width}
+                    roundsMargin={roundsStyle.margin}
+                    bracketLength={bracket.length}
                 />
             ))}
         </div>
     ))
-
-    const bracketStyle ={
-        backgroundColor: "azure",
-        display: "flex",
-        height: bracket[0] ? bracket[0].length * 100 + "px" : "800px",
-        overflow: "scroll"
-    }
     
     return (
         <div style={bracketStyle}>

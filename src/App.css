@@ -37,37 +37,6 @@
   }
 }
 
-
-.rounds {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content:space-around;
-  margin: 30px;
-}
-
-.games {
-  width: 100px;
-  background-color: #67D7A8;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  border: 1px solid black;
-  border-radius: 10px;
-}
-
-.emptyGames {
-  width: 100px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  opacity: 0%;
-}
-
-.games div {
-  text-align: center;
-  padding: 5px;
-  height: 20px;
-}
-
 .winnerOverlay {
   position:absolute;
   top: 30%;
