@@ -69,25 +69,13 @@ class Match  {
 
 
 
-const WinnerOverlay = (props) => {
-    return (
-        <div className="winnerOverlay">
-            Winner is {props.winner}
-            <br></br>
-            <button onClick={props.onOkay}>Okay</button>
-        </div>
-    )
-}
+
 
 //main component
 const Tournament = (props) => {
 
     const [bracket, setBracket] = useState([])
     const [players,setPlayers] = useState([])
-
-    //winning overlay, will be a facultative bool on comp props, user can also extract bracket data and decide action on winning game
-    const [winnerOverlay, setWinnerOverlay] = useState(false)
-    const [winner, setWinner] = useState("")
 
     useEffect(() => {
 
@@ -216,21 +204,11 @@ const Tournament = (props) => {
 
     //setting score on both side of the game >> will be completed by a checking when both players are entering a score
     const handleSetScore = (crd,player1Score,player2Score) => { // in v2, setScore will use the player id
-        if (crd[0] === bracket.length - 1) {
-            setWinnerOverlay(true)
-            setWinner(bracket[crd[0]][crd[1]].players[player1Score > player2Score ? 0 : 1].name)
-            return
-        }
         const copy = [...bracket]
         copy[crd[0]][crd[1]].setScore(player1Score,player2Score,copy)
         setBracket(copy)
     }
-
-    //hiding winner overlay, might add other func to reset bracket or send an info to parent comp
-    const handleOkayOverlay = () => {
-        setWinnerOverlay(false)
-    }
-
+    
     //sending match data to parent comp
     const handleSendMatchData = () => {
         props.getMatchData(handleFindMatchByPlayerID(props.player.id))
@@ -281,7 +259,6 @@ const Tournament = (props) => {
     return (
         <div style={bracketStyle}>
             {renderBracket}
-            { winnerOverlay ? <WinnerOverlay onOkay={handleOkayOverlay} winner={winner}/> : null}
         </div>
         
     )
