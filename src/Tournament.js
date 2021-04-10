@@ -49,13 +49,17 @@ class Match  {
     }
     fillOnePlayer(player,from) {
         if (!from) {
-            this.players[this.players.findIndex(e => !e.id)] = player // for now we'll just fill the player position by order of receiving ( 1st player to go forward we'll be in the upper position)
-        if (this.players.findIndex(e => !e.id) === -1) this.id = this.players[0].id + this.players[1].id
+            //filling from the top of the game, only used while the bracket is issuing 1st process of generation
+            this.players[this.players.findIndex(e => !e.id)] = player
+            if (this.players.findIndex(e => !e.id) === -1) this.id = this.players[0].id + this.players[1].id
         } else {
+            //filling the player depending from where he comes (top or bottom / home or outsider)
             if (from % 2 === 0) {
                 this.players[0] = player
+                if (this.players.findIndex(e => !e.id) === -1) this.id = this.players[0].id + this.players[1].id
             } else {
                 this.players[1] = player
+                if (this.players.findIndex(e => !e.id) === -1) this.id = this.players[0].id + this.players[1].id
             }
         }
     }
@@ -63,13 +67,13 @@ class Match  {
         if (this.isDone) return
 
         this.score = [player1Score,player2Score]
+        this.isDone = true
 
         //if final game, dont send to next game
         if (this.crd[0] === wholeBracket.length - 1) return
 
         //sending to next match if score is full, in this use case, it always is after one game >> replacing sendToNextMatch()
         wholeBracket[this.crd[0]+1][Math.floor(this.crd[1]/2)].fillOnePlayer(player1Score > player2Score ? this.players[0] : this.players[1], this.crd[1]) // will have to make a copy of the bracket to use it as a parameter then only setting the bracket with the modified copy
-        this.isDone = true
     }
     reset() {
         this.id = null
