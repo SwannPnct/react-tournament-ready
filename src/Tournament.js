@@ -63,6 +63,10 @@ class Match  {
         if (this.isDone) return
 
         this.score = [player1Score,player2Score]
+
+        //if final game, dont send to next game
+        if (this.crd[0] === wholeBracket.length - 1) return
+
         //sending to next match if score is full, in this use case, it always is after one game >> replacing sendToNextMatch()
         wholeBracket[this.crd[0]+1][Math.floor(this.crd[1]/2)].fillOnePlayer(player1Score > player2Score ? this.players[0] : this.players[1], this.crd[1]) // will have to make a copy of the bracket to use it as a parameter then only setting the bracket with the modified copy
         this.isDone = true
