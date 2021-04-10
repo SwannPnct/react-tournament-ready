@@ -26,6 +26,10 @@ function App() {
 
   const [lastScore, setLastScore] = useState(null)
 
+  const [clickedMatch, setClickedMatch] = useState(null)
+
+  console.log(clickedMatch)
+
   const handleGetMatchData = (data) => {
     setCurrentMatchData(data)
   }
@@ -57,6 +61,7 @@ function App() {
         insertScore = {lastScore} //{score} >> it has to be an object, even with 1 key
         getBracketData={(data) => handleGetBracketData(data)} //self-expl, is triggered every time the bracket changes
         loadBracketData={bracketDataToLoad} //useful to load an old bracket data or to re-open the tourney after the component got unmounted, players will be defined there too, no need to re-enter whole tourney players
+        onClickMatch={(data) => setClickedMatch(data)}
       />
     </div>
   );

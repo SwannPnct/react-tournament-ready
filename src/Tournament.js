@@ -21,10 +21,17 @@ const shuffleArray = (array) => {
         round.forEach((match,idx2) => {
             const {players,id,score,isDone} = match
             const playersCopy = players.map(player => {return {...player}})
-            copy[idx].push(new Match(idx,idx2,id,playersCopy,score ? [...score] : null,isDone))
+            copy[idx].push(new Match(idx,idx2,id,playersCopy,[...score],isDone))
         })
     })
     return copy
+}
+
+//copy a match
+const copyMatch = (match) => {
+    const {players,id,crd,score,isDone} = match
+    const playersCopy = players.map(player => {return {...player}})
+    return new Match(crd[0],crd[1],id,playersCopy,[...score],isDone)
 }
 
 //class to create Match instances thorough the bracket
@@ -208,7 +215,7 @@ const Tournament = (props) => {
         copy[crd[0]][crd[1]].setScore(player1Score,player2Score,copy)
         setBracket(copy)
     }
-    
+
     //sending match data to parent comp
     const handleSendMatchData = () => {
         props.getMatchData(handleFindMatchByPlayerID(props.player.id))
@@ -217,6 +224,11 @@ const Tournament = (props) => {
     //sending bracket data to parent comp
     const handleSendBracketData = () => {
         props.getBracketData(copyBracket(bracket))
+    }
+
+    //sending clicked match data
+    const handleSendClickedMatchData = (crd) => {
+        props.onClickMatch(copyMatch(bracket[crd[0]][crd[1]]))
     }
 
     //inline styles
@@ -251,6 +263,7 @@ const Tournament = (props) => {
                     bracketWidth={bracketStyle.width}
                     roundsMargin={roundsStyle.margin}
                     bracketLength={bracket.length}
+                    handleClickOnMatchFromParent={(crd) => handleSendClickedMatchData(crd)}
                 />
             ))}
         </div>
