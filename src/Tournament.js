@@ -1,106 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import './App.css'
 
+//sub component
 import Game from './Game'
 
-//array shuffle helper
-const shuffleArray = (array) => {
-    for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-    }
-}
+//class generating match instances
+import Match from './Match'
 
- //multi dimensional array deep copy helper
- const copyBracket = (bracket) => {
-    const copy = []
-    bracket.forEach((round,idx) => {
-        copy.push([])
-        round.forEach((match,idx2) => {
-            const {players,id,score,isDone} = match
-            const playersCopy = players.map(player => {return {...player}})
-            copy[idx].push(new Match(idx,idx2,id,playersCopy,[...score],isDone))
-        })
-    })
-    return copy
-}
-
-//copy a match
-const copyMatch = (match) => {
-    const {players,id,crd,score,isDone} = match
-    const playersCopy = players.map(player => {return {...player}})
-    return new Match(crd[0],crd[1],id,playersCopy,[...score],isDone)
-}
-
-//class to create Match instances thorough the bracket
-class Match  {
-    constructor(roundNumber,matchNumber,id,players,score,isDone) { //player1 might be team1 too, using a teamID might be relevant as both will be concatenated to create the match id
-        this.id = id ? id : null
-        this.crd = [roundNumber,matchNumber]
-        this.players = players ? players : [{name:null,id: null},{name:null,id: null}]
-        this.score = score ? score : [null,null] //instances of Score, will be an array of scores in more complex tournament instances
-        this.isDone = isDone
-    }
-    fillPlayers(playersList) {
-        this.players = [playersList[0],playersList[1]]
-        this.id = playersList[0].id+playersList[1].id
-    }
-    fillOnePlayer(player,from) {
-        if (!from) {
-            //filling from the top of the game, only used while the bracket is issuing 1st process of generation
-            this.players[this.players.findIndex(e => !e.id)] = player
-            if (this.players.findIndex(e => !e.id) === -1) this.id = this.players[0].id + this.players[1].id
-        } else {
-            //filling the player depending from where he comes (top or bottom / home or outsider)
-            if (from % 2 === 0) {
-                this.players[0] = player
-                if (this.players.findIndex(e => !e.id) === -1) this.id = this.players[0].id + this.players[1].id
-            } else {
-                this.players[1] = player
-                if (this.players.findIndex(e => !e.id) === -1) this.id = this.players[0].id + this.players[1].id
-            }
-        }
-    }
-    setScore(player1Score, player2Score, wholeBracket) { // shall be used only during bracket generation
-        if (this.isDone) return
-
-        this.score = [player1Score,player2Score]
-        this.isDone = true
-
-        //if final game, dont send to next game
-        if (this.crd[0] === wholeBracket.length - 1) return
-
-        //sending to next match if score is full, in this use case, it always is after one game >> replacing sendToNextMatch()
-        wholeBracket[this.crd[0]+1][Math.floor(this.crd[1]/2)].fillOnePlayer(player1Score > player2Score ? this.players[0] : this.players[1], this.crd[1]) // will have to make a copy of the bracket to use it as a parameter then only setting the bracket with the modified copy
-    }
-    setScoreByPlayerID(playerID, playerScore, wholeBracket) { //new version of score settings > each players input their score and game advance only when both score are registered
-        if (this.isDone) return
-        if (!this.players[0].id || !this.players[1].id) return
-
-        //finding the player and setting its related score
-        const index = this.players.findIndex(e => e.id === playerID)
-        this.score[index] = playerScore
-
-        if (this.score[0] && this.score[1]) {
-            this.isDone = true
-
-            //if final game, dont send to next game
-            if (this.crd[0] === wholeBracket.length - 1) return
-
-            wholeBracket[this.crd[0]+1][Math.floor(this.crd[1]/2)].fillOnePlayer(this.score[0] > this.score[1] ? this.players[0] : this.players[1], this.crd[1])
-        }
-    }
-    reset() {
-        this.id = null
-        this.players = [{name:null,id: null},{name:null,id: null}]
-        this.score = [null,null] //instances of Score, will be an array of scores in more complex tournament instances
-    }
-}
-
-
-
+//helpers
+import {copyBracket,copyMatch,shuffleArray} from './helpers'
 
 
 //main component
@@ -155,11 +63,6 @@ const Tournament = (props) => {
             length = length / 2
         }
 
-        //filling randomly 1st rounds with 1 player
-        //then filling randomly second player
-        //then advancing only the players that are alone in a match
-        // in 1st round, clearing the match with 1 player only by replacing them by empty match instances (necessary for a better UI)
-
         //fill match of 1st round with 1 player only
         const playerDBCopy = copyPlayers.map(e => {return {...e}})
         for (let k = 0; k < newBracket[0].length; k++) {
@@ -210,8 +113,12 @@ const Tournament = (props) => {
 
     useEffect(() => {
         if (bracket.length === 0) return
-        handleSendMatchData()
-        handleSendBracketData()
+        //sending current user match data ( deep copy)
+        props.getMatchData(handleFindMatchByPlayerID(props.player.id))
+
+        //sending bracket data ( deep copy)
+        props.getBracketData(copyBracket(bracket))
+
     },[bracket])
 
     useEffect(() => {
@@ -244,6 +151,7 @@ const Tournament = (props) => {
     }
 
     //helper to get the instance of the match ( better to access its method as it's not a deep copy)
+    //NOT USED FOR NOW
     const handleFindMatchInstanceByPlayerID = (playerID) => {
         let matchFound = null
         bracket.forEach((e) => {
@@ -252,16 +160,6 @@ const Tournament = (props) => {
             })
         })
         return matchFound
-    }
-
-    //sending match data to parent comp
-    const handleSendMatchData = () => {
-        props.getMatchData(handleFindMatchByPlayerID(props.player.id))
-    }
-
-    //sending bracket data to parent comp
-    const handleSendBracketData = () => {
-        props.getBracketData(copyBracket(bracket))
     }
 
     //sending clicked match data

@@ -1,3 +1,6 @@
+// App.js will not be present in the final product
+
+
 import Tournament from './Tournament'
 
 import './App.css';
@@ -27,8 +30,8 @@ function App() {
   const [playerIndex, setPlayerIndex] = useState(0)
   const [lastScore, setLastScore] = useState(null)
 
-  const [playerName, setPlayerName] = useState("")
-  const [selectedPlayer, setSelectedPlayer] = useState({name: null, id: null})
+  const [playerName, setPlayerName] = useState(players[0].name)
+  const [selectedPlayer, setSelectedPlayer] = useState(players[0])
 
   const [clickedMatch, setClickedMatch] = useState(null)
 

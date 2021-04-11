@@ -4,7 +4,7 @@ import './App.css'
 //the onclick event is for testing only
 const Game = (props) => {
 
-    //verif if player is one of the two of this game
+    //check if player is one of the two of this game
     const player = props.players.find(p => p.id === props.playerID)
 
     //inline styles
@@ -58,8 +58,6 @@ const Game = (props) => {
         top : (parseInt(props.bracketHeight) /2) - parseInt(gamesDivStyleTop.height) * 4 + "px",
         left: parseInt(props.bracketWidth) - parseInt(gamesStyle.width) -  parseInt(gamesStyle.padding) * 2+ "px"
     }
-
-
 
     return (
         <div>
