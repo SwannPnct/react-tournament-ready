@@ -63,7 +63,7 @@ class Match  {
             }
         }
     }
-    setScore(player1Score, player2Score, wholeBracket) {
+    setScore(player1Score, player2Score, wholeBracket) { // shall be used only during bracket generation
         if (this.isDone) return
 
         this.score = [player1Score,player2Score]
@@ -74,6 +74,23 @@ class Match  {
 
         //sending to next match if score is full, in this use case, it always is after one game >> replacing sendToNextMatch()
         wholeBracket[this.crd[0]+1][Math.floor(this.crd[1]/2)].fillOnePlayer(player1Score > player2Score ? this.players[0] : this.players[1], this.crd[1]) // will have to make a copy of the bracket to use it as a parameter then only setting the bracket with the modified copy
+    }
+    setScoreByPlayerID(playerID, playerScore, wholeBracket) { //new version of score settings > each players input their score and game advance only when both score are registered
+        if (this.isDone) return
+        if (!this.players[0].id || !this.players[1].id) return
+
+        //finding the player and setting its related score
+        const index = this.players.findIndex(e => e.id === playerID)
+        this.score[index] = playerScore
+
+        if (this.score[0] && this.score[1]) {
+            this.isDone = true
+
+            //if final game, dont send to next game
+            if (this.crd[0] === wholeBracket.length - 1) return
+
+            wholeBracket[this.crd[0]+1][Math.floor(this.crd[1]/2)].fillOnePlayer(this.score[0] > this.score[1] ? this.players[0] : this.players[1], this.crd[1])
+        }
     }
     reset() {
         this.id = null
@@ -200,28 +217,41 @@ const Tournament = (props) => {
     useEffect(() => {
         if (!props.insertScore) return
         const {score} = props.insertScore
+
+        const bracketCopy = copyBracket(bracket)
+
+        //getting deep copy of the match, to find match crd and use it in bracket copy
         const match = handleFindMatchByPlayerID(props.player.id)
-        const playerIndex = match.players.findIndex(e => e.id === props.player.id)
-        playerIndex === 0 ? handleSetScore([...match.crd],score,0) : handleSetScore([...match.crd],0,score)
+
+        bracketCopy[match.crd[0]][match.crd[1]].setScoreByPlayerID(props.player.id,score,bracketCopy)
+
+        console.log(bracketCopy)
+
+        setBracket(bracketCopy)
+
     },[props.insertScore])
 
     //helper to find match with player id > might be ext out of component in a helper file
     const handleFindMatchByPlayerID = (playerID) => {
         //this should work with a reversed bracket, not a normal order one, i really dont get it, but well, it works
-        let matchData = null
+        let matchFound = null
         bracket.forEach((e) => {
-            e.forEach(f => {
-                if (f.players.findIndex(j => j.id === playerID) !== -1) return matchData = f
+            e.forEach(match => {
+                if (match.players.findIndex(player => player.id === playerID) !== -1) return matchFound = match
             })
         })
-        return {...matchData}
+        return copyMatch(matchFound)
     }
 
-    //setting score on both side of the game >> will be completed by a checking when both players are entering a score
-    const handleSetScore = (crd,player1Score,player2Score) => { // in v2, setScore will use the player id
-        const copy = [...bracket]
-        copy[crd[0]][crd[1]].setScore(player1Score,player2Score,copy)
-        setBracket(copy)
+    //helper to get the instance of the match ( better to access its method as it's not a deep copy)
+    const handleFindMatchInstanceByPlayerID = (playerID) => {
+        let matchFound = null
+        bracket.forEach((e) => {
+            e.forEach(match => {
+                if (match.players.findIndex(player => player.id === playerID) !== -1) return matchFound = match
+            })
+        })
+        return matchFound
     }
 
     //sending match data to parent comp
@@ -265,7 +295,6 @@ const Tournament = (props) => {
                     players={f.players} 
                     score = {f.score}
                     crd={[i,j]} 
-                    handleSetScore={(crd,score1,score2) => handleSetScore(crd,score1,score2)}
                     key={i+j}
                     bracketHeight={bracketStyle.height}
                     bracketWidth={bracketStyle.width}

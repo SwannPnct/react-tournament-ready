@@ -62,11 +62,11 @@ const Game = (props) => {
         <div>
             {props.crd[0] ===  props.bracketLength -1 ? (<h3 style={finaleTextStyle}>Final</h3>) : null}
             <div onClick={() => props.handleClickOnMatchFromParent(props.crd)} style={props.crd[0] === 0 && !props.players[0].id ? emptyGamesStyle : gamesStyle}>
-                <div onClick={() => props.handleSetScore(props.crd,1,0)} style={gamesDivStyleTop}>
+                <div style={gamesDivStyleTop}>
                     <div style={leftDivStyle}>{props.players[0].name}</div>
                     <div style={props.score[0] > props.score[1] ? winningScoreStyle : {}}>{props.score[0]}</div>
                 </div>
-                <div onClick={() => props.handleSetScore(props.crd,0,1)} style={gamesDivStyleBottom}>
+                <div style={gamesDivStyleBottom}>
                     <div style={leftDivStyle}>{props.players[1].name}</div>
                     <div style={props.score[1] > props.score[0] ? winningScoreStyle : {}}>{props.score[1]}</div>
                 </div>

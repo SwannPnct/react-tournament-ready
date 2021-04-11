@@ -24,11 +24,13 @@ function App() {
 
   const [bracketDataToLoad, setBracketDataToLoad] = useState(null)
 
+  const [playerIndex, setPlayerIndex] = useState(0)
   const [lastScore, setLastScore] = useState(null)
 
-  const [clickedMatch, setClickedMatch] = useState(null)
+  const [playerName, setPlayerName] = useState("")
+  const [selectedPlayer, setSelectedPlayer] = useState({name: null, id: null})
 
-  console.log(clickedMatch)
+  const [clickedMatch, setClickedMatch] = useState(null)
 
   const handleGetMatchData = (data) => {
     setCurrentMatchData(data)
@@ -41,8 +43,10 @@ function App() {
   }
 
   const handleSetUserScore = () => {
+    if (!selectedPlayer.id) return console.log("no user set")
+    const randomScore = Math.floor(Math.random() * 100)
     setLastScore({
-      score: 1
+      score: randomScore
     })
   }
 
@@ -50,18 +54,26 @@ function App() {
     setBracketDataToLoad(bracketData)
   }
 
+  const handleSelectPlayer = () => {
+    const foundPlayer = players.find(e => e.name === playerName)
+    if (!foundPlayer) return console.log("no user found")
+    setSelectedPlayer(foundPlayer)
+  }
+
   return (
     <div>
-      <button onClick={handleSetUserScore}>user win</button>
+      <input value={playerName} onChange={(e) => setPlayerName(e.target.value)}></input>
+      <button onClick={handleSelectPlayer}>Confirm user</button>
+      <button onClick={handleSetUserScore}>user random score</button>
       <button onClick={handleLoadBracketData}>load tournament</button>
       <Tournament 
-        player={players[0]} //{name:... , id:...}
+        player={selectedPlayer} //{name:... , id:...}
         players={players} //array of player objects, including user ('player')
         getMatchData={(data) => handleGetMatchData(data)} //current user match data
         insertScore = {lastScore} //{score} >> it has to be an object, even with 1 key
         getBracketData={(data) => handleGetBracketData(data)} //self-expl, is triggered every time the bracket changes
         loadBracketData={bracketDataToLoad} //useful to load an old bracket data or to re-open the tourney after the component got unmounted, players will be defined there too, no need to re-enter whole tourney players
-        onClickMatch={(data) => setClickedMatch(data)}
+        onClickMatch={(data) => console.log(data)}
       />
     </div>
   );
