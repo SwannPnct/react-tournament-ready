@@ -6,19 +6,19 @@ import Tournament from './Tournament'
 import './App.css';
 import { useState } from 'react';
 
-//helper to create a player DB > for development only
-const randomPlayerDB = (count) => {
+//helper to create a team DB > for development only
+const randomTeamDB = (count) => {
   const base = []
   for (let i = 0; i < count; i++) {
     let id = ""
     for (let j = 0;j< 5;j++) {
       id += Math.floor(Math.random() * 10)
     }
-    base.push({name: "player"+id,id})
+    base.push({name: "team"+id,id})
   }
   return base
 }
-const players = randomPlayerDB(15)
+const teams = randomTeamDB(15)
 
 function App() {
 
@@ -27,11 +27,11 @@ function App() {
 
   const [bracketDataToLoad, setBracketDataToLoad] = useState(null)
 
-  const [playerIndex, setPlayerIndex] = useState(0)
+  const [teamIndex, setTeamIndex] = useState(0)
   const [lastScore, setLastScore] = useState(null)
 
-  const [playerName, setPlayerName] = useState(players[0].name)
-  const [selectedPlayer, setSelectedPlayer] = useState(players[0])
+  const [teamName, setTeamName] = useState(teams[0].name)
+  const [selectedTeam, setSelectedTeam] = useState(teams[0])
 
   const [clickedMatch, setClickedMatch] = useState(null)
 
@@ -46,7 +46,7 @@ function App() {
   }
 
   const handleSetUserScore = () => {
-    if (!selectedPlayer.id) return console.log("no user set")
+    if (!selectedTeam.id) return console.log("no user set")
     const randomScore = Math.floor(Math.random() * 100)
     setLastScore({
       score: randomScore
@@ -57,25 +57,25 @@ function App() {
     setBracketDataToLoad(bracketData)
   }
 
-  const handleSelectPlayer = () => {
-    const foundPlayer = players.find(e => e.name === playerName)
-    if (!foundPlayer) return console.log("no user found")
-    setSelectedPlayer(foundPlayer)
+  const handleSelectTeam = () => {
+    const foundTeam = teams.find(e => e.name === teamName)
+    if (!foundTeam) return console.log("no team found")
+    setSelectedTeam(foundTeam)
   }
 
   return (
     <div>
-      <input value={playerName} onChange={(e) => setPlayerName(e.target.value)}></input>
-      <button onClick={handleSelectPlayer}>Confirm user</button>
+      <input value={teamName} onChange={(e) => setTeamName(e.target.value)}></input>
+      <button onClick={handleSelectTeam}>Confirm team</button>
       <button onClick={handleSetUserScore}>user random score</button>
       <button onClick={handleLoadBracketData}>load tournament</button>
       <Tournament 
-        player={selectedPlayer} //{name:... , id:...}
-        players={players} //array of player objects, including user ('player')
+        team={selectedTeam} //{name:... , id:...}
+        teams={teams} //array of team objects, including user ('team')
         getMatchData={(data) => handleGetMatchData(data)} //current user match data
         insertScore = {lastScore} //{score} >> it has to be an object, even with 1 key
         getBracketData={(data) => handleGetBracketData(data)} //self-expl, is triggered every time the bracket changes
-        loadBracketData={bracketDataToLoad} //useful to load an old bracket data or to re-open the tourney after the component got unmounted, players will be defined there too, no need to re-enter whole tourney players
+        loadBracketData={bracketDataToLoad} //useful to load an old bracket data or to re-open the tourney after the component got unmounted, teams will be defined there too, no need to re-enter whole tourney teams
         onClickMatch={(data) => console.log(data)}
       />
     </div>

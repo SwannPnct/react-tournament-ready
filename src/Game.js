@@ -4,14 +4,14 @@ import './App.css'
 //the onclick event is for testing only
 const Game = (props) => {
 
-    //check if player is one of the two of this game
-    const player = props.players.find(p => p.id === props.playerID)
+    //check if team is one of the two of this game
+    const team = props.teams.find(t => t.id === props.teamID)
 
     //inline styles
     
     const gamesStyle = {
         width: "150px",
-        backgroundColor: player ? "#B4FFB7" :"#EEEEEE",
+        backgroundColor: team ? "#B4FFB7" :"#EEEEEE",
         marginTop: "10px",
         marginBottom: "10px",
         border: "1px solid black",
@@ -62,13 +62,13 @@ const Game = (props) => {
     return (
         <div>
             {props.crd[0] ===  props.bracketLength -1 ? (<h3 style={finaleTextStyle}>Final</h3>) : null}
-            <div onClick={() => props.handleClickOnMatchFromParent(props.crd)} style={props.crd[0] === 0 && !props.players[0].id ? emptyGamesStyle : gamesStyle}>
+            <div onClick={() => props.handleClickOnMatchFromParent(props.crd)} style={props.crd[0] === 0 && !props.teams[0].id ? emptyGamesStyle : gamesStyle}>
                 <div style={gamesDivStyleTop}>
-                    <div style={leftDivStyle}>{props.players[0].name}</div>
+                    <div style={leftDivStyle}>{props.teams[0].name}</div>
                     <div style={props.score[0] > props.score[1] ? winningScoreStyle : {}}>{props.score[0]}</div>
                 </div>
                 <div style={gamesDivStyleBottom}>
-                    <div style={leftDivStyle}>{props.players[1].name}</div>
+                    <div style={leftDivStyle}>{props.teams[1].name}</div>
                     <div style={props.score[1] > props.score[0] ? winningScoreStyle : {}}>{props.score[1]}</div>
                 </div>
             </div>

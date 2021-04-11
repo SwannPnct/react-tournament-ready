@@ -15,22 +15,22 @@ import {copyBracket,copyMatch,shuffleArray} from './helpers'
 const Tournament = (props) => {
 
     const [bracket, setBracket] = useState([])
-    const [players,setPlayers] = useState([])
+    const [teams,setTeams] = useState([])
 
     useEffect(() => {
 
         if (props.loadBracketData) { // will be null for testing
-            //retrieving the players data and order via the tournament 1st round
-            let playersFromLoad = []
+            //retrieving the teams data and order via the tournament 1st round
+            let teamsFromLoad = []
 
-            //getting players from 1st round from game that have players only (filter method, could have been done with condition check in for each)
-            props.loadBracketData[0].filter(match => match.players[0].id).forEach(match => playersFromLoad = playersFromLoad.concat(match.players)) // players wont get concatenated
-            //getting players from 2nd round and verifying presence in playersFromLoad to avoid duplicate
-            props.loadBracketData[1].forEach(match => match.players.forEach(player => {
-                if (player.id && playersFromLoad.findIndex(loaded => loaded.id === player.id) === -1) playersFromLoad.push(player)
+            //getting teams from 1st round from game that have teams only (filter method, could have been done with condition check in for each)
+            props.loadBracketData[0].filter(match => match.teams[0].id).forEach(match => teamsFromLoad = teamsFromLoad.concat(match.teams)) // teams wont get concatenated
+            //getting teams from 2nd round and verifying presence in teamsFromLoad to avoid duplicate
+            props.loadBracketData[1].forEach(match => match.teams.forEach(team => {
+                if (team.id && teamsFromLoad.findIndex(loaded => loaded.id === team.id) === -1) teamsFromLoad.push(team)
             }))
 
-            setPlayers(playersFromLoad.map(e => {return {...e}}))
+            setTeams(teamsFromLoad.map(e => {return {...e}}))
 
             //loading the bracket
             setBracket(copyBracket(props.loadBracketData))
@@ -38,17 +38,17 @@ const Tournament = (props) => {
             return
         }
 
-        const copyPlayers = props.players.map(e => {return {...e}})
-        shuffleArray(copyPlayers)
-        setPlayers(copyPlayers)
+        const copyTeams = props.teams.map(e => {return {...e}})
+        shuffleArray(copyTeams)
+        setTeams(copyTeams)
 
         const newBracket = []
         
         //counting rounds, we need to find the closest number to 2 power something
         let rounds = 0
-        let countPlayers = copyPlayers.length
+        let countTeams = copyTeams.length
 
-        while (Math.pow(2,rounds) < countPlayers) {
+        while (Math.pow(2,rounds) < countTeams) {
             rounds++
         }
 
@@ -63,28 +63,28 @@ const Tournament = (props) => {
             length = length / 2
         }
 
-        //fill match of 1st round with 1 player only
-        const playerDBCopy = copyPlayers.map(e => {return {...e}})
+        //fill match of 1st round with 1 team only
+        const teamDBCopy = copyTeams.map(e => {return {...e}})
         for (let k = 0; k < newBracket[0].length; k++) {
-            newBracket[0][k].fillOnePlayer({...playerDBCopy[0]})
-            playerDBCopy.shift()
+            newBracket[0][k].fillOneTeam({...teamDBCopy[0]})
+            teamDBCopy.shift()
         }
 
-        //filling matches with all remaining players
+        //filling matches with all remaining teams
         const matchToPickFrom = []
         for (let j = 0; j < newBracket[0].length; j++) {
             matchToPickFrom.push(j)
         }
         shuffleArray(matchToPickFrom)
         let iterator = 0
-        while (playerDBCopy.length !== 0) {
-            newBracket[0][matchToPickFrom[iterator]].fillOnePlayer({...playerDBCopy[0]})
-            playerDBCopy.shift()
+        while (teamDBCopy.length !== 0) {
+            newBracket[0][matchToPickFrom[iterator]].fillOneTeam({...teamDBCopy[0]})
+            teamDBCopy.shift()
             iterator++
         }
 
-        //advancing players alone in match in next round and replacing match instances in 1st round with only 1 player with empty match instances
-        newBracket[0].filter(match => match.players.find(player => !player.id)).forEach(match => {
+        //advancing teams alone in match in next round and replacing match instances in 1st round with only 1 team with empty match instances
+        newBracket[0].filter(match => match.teams.find(team => !team.id)).forEach(match => {
             match.setScore(1,0,newBracket)
             match.reset()
         })
@@ -92,19 +92,19 @@ const Tournament = (props) => {
         setBracket(newBracket)
     },[])
 
-    useEffect(() => { // for sockets ?
+    useEffect(() => { // for sockets or load from backend/DB
         if (props.loadBracketData) {
-            //retrieving the players data and order via the tournament 1st round
-            let playersFromLoad = []
+            //retrieving the teams data and order via the tournament 1st round
+            let teamsFromLoad = []
 
-            //getting players from 1st round from game that have players only (filter method, could have been done with condition check in for each)
-            props.loadBracketData[0].filter(match => match.players[0].id).forEach(match => playersFromLoad = playersFromLoad.concat(match.players)) // players wont get concatenated
-            //getting players from 2nd round and verifying presence in playersFromLoad to avoid duplicate
-            props.loadBracketData[1].forEach(match => match.players.forEach(player => {
-                if (player.id && playersFromLoad.findIndex(loaded => loaded.id === player.id) === -1) playersFromLoad.push(player)
+            //getting teams from 1st round from game that have teams only (filter method, could have been done with condition check in for each)
+            props.loadBracketData[0].filter(match => match.teams[0].id).forEach(match => teamsFromLoad = teamsFromLoad.concat(match.teams)) // teams wont get concatenated
+            //getting teams from 2nd round and verifying presence in teamsFromLoad to avoid duplicate
+            props.loadBracketData[1].forEach(match => match.teams.forEach(team => {
+                if (team.id && teamsFromLoad.findIndex(loaded => loaded.id === team.id) === -1) teamsFromLoad.push(team)
             }))
 
-            setPlayers(playersFromLoad.map(e => {return {...e}}))
+            setTeams(teamsFromLoad.map(team => {return {...team}}))
 
             //loading the bracket
             setBracket(copyBracket(props.loadBracketData))
@@ -114,7 +114,7 @@ const Tournament = (props) => {
     useEffect(() => {
         if (bracket.length === 0) return
         //sending current user match data ( deep copy)
-        props.getMatchData(handleFindMatchByPlayerID(props.player.id))
+        props.getMatchData(handleFindMatchByTeamID(props.team.id))
 
         //sending bracket data ( deep copy)
         props.getBracketData(copyBracket(bracket))
@@ -128,35 +128,33 @@ const Tournament = (props) => {
         const bracketCopy = copyBracket(bracket)
 
         //getting deep copy of the match, to find match crd and use it in bracket copy
-        const match = handleFindMatchByPlayerID(props.player.id)
+        const match = handleFindMatchByTeamID(props.team.id)
 
-        bracketCopy[match.crd[0]][match.crd[1]].setScoreByPlayerID(props.player.id,score,bracketCopy)
-
-        console.log(bracketCopy)
+        bracketCopy[match.crd[0]][match.crd[1]].setScoreByTeamID(props.team.id,score,bracketCopy)
 
         setBracket(bracketCopy)
 
     },[props.insertScore])
 
-    //helper to find match with player id > might be ext out of component in a helper file
-    const handleFindMatchByPlayerID = (playerID) => {
+    //helper to find match with team id > might be ext out of component in a helper file
+    const handleFindMatchByTeamID = (teamID) => {
         //this should work with a reversed bracket, not a normal order one, i really dont get it, but well, it works
         let matchFound = null
         bracket.forEach((e) => {
             e.forEach(match => {
-                if (match.players.findIndex(player => player.id === playerID) !== -1) return matchFound = match
+                if (match.teams.findIndex(team => team.id === teamID) !== -1) return matchFound = match
             })
         })
         return copyMatch(matchFound)
     }
 
-    //helper to get the instance of the match ( better to access its method as it's not a deep copy)
+    //helper to get the instance of the match ( to access its method as it's not a deep copy)
     //NOT USED FOR NOW
-    const handleFindMatchInstanceByPlayerID = (playerID) => {
+    const handleFindMatchInstanceByTeamID = (teamID) => {
         let matchFound = null
-        bracket.forEach((e) => {
-            e.forEach(match => {
-                if (match.players.findIndex(player => player.id === playerID) !== -1) return matchFound = match
+        bracket.forEach((round) => {
+            round.forEach(match => {
+                if (match.teams.findIndex(team => team.id === teamID) !== -1) return matchFound = match
             })
         })
         return matchFound
@@ -186,13 +184,13 @@ const Tournament = (props) => {
 
     //rendering functions
     //handleSetScore prop is for testing only ( related to onclick event)
-    const renderBracket = bracket.map((e,i) => (
+    const renderBracket = bracket.map((round,i) => (
         <div style={roundsStyle} key={i}>
-            {e.map((f,j) => (
+            {round.map((match,j) => (
                 <Game
-                    playerID={props.player.id}
-                    players={f.players} 
-                    score = {f.score}
+                    teamID={props.team.id}
+                    teams={match.teams} 
+                    score = {match.score}
                     crd={[i,j]} 
                     key={i+j}
                     bracketHeight={bracketStyle.height}
