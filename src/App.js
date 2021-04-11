@@ -15,7 +15,7 @@ const randomPlayerDB = (count) => {
   }
   return base
 }
-const players = randomPlayerDB(8)
+const players = randomPlayerDB(15)
 
 function App() {
 

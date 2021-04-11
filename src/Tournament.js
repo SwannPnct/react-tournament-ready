@@ -291,7 +291,8 @@ const Tournament = (props) => {
     const renderBracket = bracket.map((e,i) => (
         <div style={roundsStyle} key={i}>
             {e.map((f,j) => (
-                <Game 
+                <Game
+                    playerID={props.player.id}
                     players={f.players} 
                     score = {f.score}
                     crd={[i,j]} 

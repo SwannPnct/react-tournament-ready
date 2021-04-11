@@ -4,11 +4,14 @@ import './App.css'
 //the onclick event is for testing only
 const Game = (props) => {
 
+    //verif if player is one of the two of this game
+    const player = props.players.find(p => p.id === props.playerID)
+
     //inline styles
     
     const gamesStyle = {
         width: "150px",
-        backgroundColor: "#EEEEEE",
+        backgroundColor: player ? "#B4FFB7" :"#EEEEEE",
         marginTop: "10px",
         marginBottom: "10px",
         border: "1px solid black",
