@@ -114,10 +114,11 @@ const Tournament = (props) => {
     useEffect(() => {
         if (bracket.length === 0) return
         //sending current user match data ( deep copy)
-        props.getMatchData(handleFindMatchByTeamID(props.team.id))
+        if (props.getMatchData) props.getMatchData(handleFindMatchByTeamID(props.team.id))
+        
 
         //sending bracket data ( deep copy)
-        props.getBracketData(copyBracket(bracket))
+        if (props.getBracketData) props.getBracketData(copyBracket(bracket))
 
     },[bracket])
 
