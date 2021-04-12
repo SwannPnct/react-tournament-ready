@@ -39,7 +39,7 @@ const App = () => {
 ## Attributes and examples
 
 ### team and teams
-*** required for the bracket generation ***
+***required for the bracket generation***
 
 The attribute `team` input the current user info. The view and the scores will be set depending of it.
 The attribute `teams` input all the participants/teams/players, including the current user.
@@ -67,7 +67,7 @@ The attribute `teams` input all the participants/teams/players, including the cu
     />
 ```
 ### insertScore
-*** required for bracket to advance ***
+***required for bracket to advance***
 
 Use this attribute to insert the score of the current user, on its current match.
 
@@ -91,7 +91,7 @@ const handleSetNewScore = () => {
 ```
 
 ### getMatchData
-*** optional ***
+***optional***
 
 Use this attribute to extract a deep copy of the current user match (the one you've set on the `team` attribute)
 
@@ -122,7 +122,7 @@ A Match is a class instance that looks like :
 ```
 
 ### onClickMatch
-*** optional ***
+***optional***
 
 Use this attribute to extract a deep copy of the clicked match.
 
@@ -139,7 +139,7 @@ const handleClickedMatchData = (data) => {
 ```
 
 ### getBracketData
-*** optional ***
+***optional***
 
 Use this attribute to extract a deep copy of the bracket data every time there is a change to it.
 
@@ -173,7 +173,7 @@ Here how it might look like :
 ```
 
 ### loadBracketData
-*** optional ***
+***optional***
 
 Use this attribute to load bracket data into the module. Use it while component is mounting if you want one-time update, or with web sockets for real-time.
 
