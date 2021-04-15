@@ -25,7 +25,7 @@ For the participants to advance, simply insert scores.
 ## Usage
 
 ```
-import {Tournament} from 'react-tournament-ready'
+import Tournament from 'react-tournament-ready/dist/Tournament'
 
 const App = () => {
     return (

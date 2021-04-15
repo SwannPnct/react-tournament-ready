@@ -1,4 +1,4 @@
-import './App.css'
+import React from 'react'
 
 //subcomponent
 //the onclick event is for testing only
