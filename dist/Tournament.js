@@ -1,98 +1,23 @@
 import React, { useEffect, useState } from 'react'; //sub component
 
-import Game from './Game'; //class generating match instances
+import Game from './Game'; //helpers
 
-import Match from './Match'; //helpers
-
-import { copyBracket, copyMatch, shuffleArray } from './helpers'; //main component
+import { copyBracket, copyMatch, createBracket, extractTeams } from './helpers'; //main component
 
 const Tournament = props => {
   const [bracket, setBracket] = useState([]);
   const [teams, setTeams] = useState([]);
   useEffect(() => {
     if (props.loadBracketData) {
-      // will be null for testing
-      //retrieving the teams data and order via the tournament 1st round
-      let teamsFromLoad = []; //getting teams from 1st round from game that have teams only (filter method, could have been done with condition check in for each)
-
-      props.loadBracketData[0].filter(match => match.teams[0].id).forEach(match => teamsFromLoad = teamsFromLoad.concat(match.teams)); // teams wont get concatenated
-      //getting teams from 2nd round and verifying presence in teamsFromLoad to avoid duplicate
-
-      props.loadBracketData[1].forEach(match => match.teams.forEach(team => {
-        if (team.id && teamsFromLoad.findIndex(loaded => loaded.id === team.id) === -1) teamsFromLoad.push(team);
-      }));
-      setTeams(teamsFromLoad.map(e => {
-        return { ...e
-        };
-      })); //loading the bracket
+      //extracting players from the bracket data
+      setTeams(extractTeams(props.loadBracketData)); //loading the bracket
 
       setBracket(copyBracket(props.loadBracketData));
       return;
     }
 
-    const copyTeams = props.teams.map(e => {
-      return { ...e
-      };
-    });
-    shuffleArray(copyTeams);
-    setTeams(copyTeams);
-    const newBracket = []; //counting rounds, we need to find the closest number to 2 power something
-
-    let rounds = 0;
-    let countTeams = copyTeams.length;
-
-    while (Math.pow(2, rounds) < countTeams) {
-      rounds++;
-    } //creating bracket with empty match instance, 1st round (which will have not all matches use, will still be filled entirely with match instances)
-    //pre-initializing rounds and empty matches instances
-
-
-    let length = Math.pow(2, rounds);
-
-    for (let i = 0; i < rounds; i++) {
-      newBracket.push([]);
-
-      for (let j = 0; j < length / 2; j++) {
-        newBracket[i].push(new Match(i, j));
-      }
-
-      length = length / 2;
-    } //fill match of 1st round with 1 team only
-
-
-    const teamDBCopy = copyTeams.map(e => {
-      return { ...e
-      };
-    });
-
-    for (let k = 0; k < newBracket[0].length; k++) {
-      newBracket[0][k].fillOneTeam({ ...teamDBCopy[0]
-      });
-      teamDBCopy.shift();
-    } //filling matches with all remaining teams
-
-
-    const matchToPickFrom = [];
-
-    for (let j = 0; j < newBracket[0].length; j++) {
-      matchToPickFrom.push(j);
-    }
-
-    shuffleArray(matchToPickFrom);
-    let iterator = 0;
-
-    while (teamDBCopy.length !== 0) {
-      newBracket[0][matchToPickFrom[iterator]].fillOneTeam({ ...teamDBCopy[0]
-      });
-      teamDBCopy.shift();
-      iterator++;
-    } //advancing teams alone in match in next round and replacing match instances in 1st round with only 1 team with empty match instances
-
-
-    newBracket[0].filter(match => match.teams.find(team => !team.id)).forEach(match => {
-      match.setScore(1, 0, newBracket);
-      match.reset();
-    });
+    const newBracket = createBracket(props.teams);
+    setTeams(extractTeams(newBracket));
     setBracket(newBracket);
   }, []);
   useEffect(() => {
