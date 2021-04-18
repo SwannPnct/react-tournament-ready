@@ -43,10 +43,12 @@ const createBracket = (teams) => {
     let rounds = 0
     let countTeams = copyTeams.length
 
+    //count rounds necessary for the whole bracket
     while (Math.pow(2,rounds) < countTeams) {
         rounds++
     }
 
+    //push empty Match instances
     let length = Math.pow(2,rounds)
     for (let i = 0; i < rounds; i++) {
         newBracket.push([])
@@ -91,11 +93,15 @@ const extractTeams = (bracket) => {
 
     //getting teams from 1st round from game that have teams only (filter method, could have been done with condition check in for each)
     bracket[0].filter(match => match.teams[0].id).forEach(match => teamsFromLoad = teamsFromLoad.concat(match.teams)) // teams wont get concatenated
-    //getting teams from 2nd round and verifying presence in teamsFromLoad to avoid duplicate
-    bracket[1].forEach(match => match.teams.forEach(team => {
-        if (team.id && teamsFromLoad.findIndex(loaded => loaded.id === team.id) === -1) teamsFromLoad.push(team)
-    }))
 
+    //def check if there is less than 3 players
+    if (bracket[1]) {
+        //getting teams from 2nd round and verifying presence in teamsFromLoad to avoid duplicate
+        bracket[1].forEach(match => match.teams.forEach(team => {
+            if (team.id && teamsFromLoad.findIndex(loaded => loaded.id === team.id) === -1) teamsFromLoad.push(team)
+        }))
+    }
+    
     //returning copy
     return teamsFromLoad.map(e => {return {...e}})
 }

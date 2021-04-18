@@ -1,7 +1,7 @@
 {
   "name": "react-tournament-ready",
   "description": "React component to generate a tournament bracket with simple inputs.",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "private": false,
   "babel": {
     "presets": [
@@ -9,9 +9,6 @@
     ]
   },
   "dependencies": {
-    "@testing-library/jest-dom": "^5.11.10",
-    "@testing-library/react": "^11.2.5",
-    "@testing-library/user-event": "^12.8.3",
     "cra-template": "^1.1.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

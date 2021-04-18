@@ -233,6 +233,7 @@ const newBracket = createBracket(teams)
 - [ ] Make the component usable from ‘react-tournament-ready’ and not from the dist folder ( use of rollup pck)
 - [ ] Make the component props automatically showing as hints to help with usage
 - [x] Make generate bracket function usable without using the component ( help for backend)
+- [x] Bracket handling for 1 or 2 teams ( does not work at all for now)
 
 # Releases
 
@@ -241,4 +242,8 @@ npm publishing, readme change and publishing bug fixes
 
 ### 1.0.4
 exported bracket generation function so it be usable as a helper for an usage outside of the component
+
+### 1.0.5 to 1.0.7
+bracket handling for 1 or 2 teams, removed unused dependencies
+
 
