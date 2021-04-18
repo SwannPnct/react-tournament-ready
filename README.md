@@ -10,8 +10,13 @@
     * [onClickMatch](#onClickMatch)
     * [getBracketData](#getBracketData)
     * [loadBracketData](#loadBracketData)
+* [Helpers](#helpers)
+    * [createBracket](#createBracket)
 
 ## Description
+
+GitHub : https://github.com/SwannPnct/react-tournament-ready
+npm : https://www.npmjs.com/package/react-tournament-ready
 
 A React Module to create a tournament bracket with any number of participant from a minimal input.
 For the participants to advance, simply insert scores.
@@ -198,6 +203,25 @@ useEffect(() => {
     />
 ```
 
+## Helpers
+
+### createBracket
+
+```
+import createBracket from 'react-tournament-ready/dist/helpers'
+
+//same format as team/teams
+const teams = [
+    {
+        ...
+    }
+]
+
+//return a full bracket, same format as getBracketData returned value
+const newBracket = createBracket(teams)
+
+```
+
 # To-Do
 
 - [ ] Allow score to be inserted with any other teamID without having to update the current user/team state
@@ -205,4 +229,16 @@ useEffect(() => {
 - [ ] Customizable style ( props to inline styles )
 - [ ] Find a way to simplify data extraction and insertion for an easier compliance with DB models
 - [ ] UI : Center automatically tournament view on the user match
-- [ ] UI : connect the matches with lines to make a more logical bracket and easier to read
+- [ ] UI : Connect the matches with lines to make a more logical bracket and easier to read
+- [ ] Make the component usable from ‘react-tournament-ready’ and not from the dist folder ( use of rollup pck)
+- [ ] Make the component props automatically showing as hints to help with usage
+- [x] Make generate bracket function usable without using the component ( help for backend)
+
+# Releases
+
+### 1.0.0 to 1.0.3
+npm publishing, readme change and publishing bug fixes
+
+### 1.0.4
+exported bracket generation function so it be usable as a helper for an usage outside of the component
+
