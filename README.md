@@ -12,6 +12,7 @@
     * [loadBracketData](#loadBracketData)
 * [Helpers](#helpers)
     * [createBracket](#createBracket)
+    * [insertScore](#insertScore)
 * [Style props](#style-props)
 * [To-Do](#to-do)
 * [Releases](#releases)
@@ -209,6 +210,7 @@ useEffect(() => {
 ## Helpers
 
 ### createBracket
+`(teams)`
 
 ```
 import createBracket from 'react-tournament-ready/dist/helpers'
@@ -222,6 +224,24 @@ const teams = [
 
 //return a full bracket, same format as getBracketData returned value
 const newBracket = createBracket(teams)
+
+```
+
+### insertScore
+`(user,score,bracket)`
+
+```
+import insertScore from 'react-tournament-ready/dist/helpers'
+
+const teams = [
+    {
+        ...
+    }
+]
+
+const newBracket = createBracket(teams)
+
+const modifiedBracket = insertScore(teams[0],{score: 12},newBracket)
 
 ```
 
@@ -327,20 +347,24 @@ Default:
 
 # Releases
 
-### 1.0.0 to 1.0.3
-* npm publishing
-* readme change
-* publishing bug fixes
+### 1.0.9
+* externalized insert score function, as a helper
+* externalized find match by team id, as a helper
 
-### 1.0.4
-* exported bracket generation function so it be usable as a helper for an usage outside of the component
+### 1.0.8
+* style is now customizable, limited to the games only
+* fix props.onClickMatch is not a function
 
 ### 1.0.5 to 1.0.7
 * bracket handling for 1 or 2 teams
 * removed unused dependencies
 
-### 1.0.8
-* style is now customizable, limited to the games only
-* fix props.onClickMatch is not a function
+### 1.0.4
+* externalized bracket generation function so it be usable as a helper for an usage outside of the component
+
+### 1.0.0 to 1.0.3
+* npm publishing
+* readme change
+* publishing bug fixes
 
 

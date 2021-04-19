@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Game from './Game'
 
 //helpers
-import {copyBracket,copyMatch,createBracket,extractTeams} from './helpers'
+import {copyBracket,copyMatch,createBracket,extractTeams,findMatchByTeamID ,insertScore} from './helpers'
 
 
 //main component
@@ -49,7 +49,7 @@ const Tournament = (props) => {
     useEffect(() => {
         if (bracket.length === 0) return
         //sending current user match data ( deep copy)
-        if (props.getMatchData) props.getMatchData(handleFindMatchByTeamID(props.team.id))
+        if (props.getMatchData) props.getMatchData(findMatchByTeamID(props.team,bracket))
         
 
         //sending bracket data ( deep copy)
@@ -61,28 +61,9 @@ const Tournament = (props) => {
         if (!props.insertScore) return
         const {score} = props.insertScore
 
-        const bracketCopy = copyBracket(bracket)
-
-        //getting deep copy of the match, to find match crd and use it in bracket copy
-        const match = handleFindMatchByTeamID(props.team.id)
-
-        bracketCopy[match.crd[0]][match.crd[1]].setScoreByTeamID(props.team.id,score,bracketCopy)
-
-        setBracket(bracketCopy)
+        setBracket(insertScore(props.team,score,bracket))
 
     },[props.insertScore])
-
-    //helper to find match with team id > might be ext out of component in a helper file
-    const handleFindMatchByTeamID = (teamID) => {
-        //this should work with a reversed bracket, not a normal order one, i really dont get it, but well, it works
-        let matchFound = null
-        bracket.forEach((e) => {
-            e.forEach(match => {
-                if (match.teams.findIndex(team => team.id === teamID) !== -1) return matchFound = match
-            })
-        })
-        return copyMatch(matchFound)
-    }
 
     //helper to get the instance of the match ( to access its method as it's not a deep copy)
     //NOT USED FOR NOW

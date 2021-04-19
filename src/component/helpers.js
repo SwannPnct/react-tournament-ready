@@ -106,4 +106,26 @@ const extractTeams = (bracket) => {
     return teamsFromLoad.map(e => {return {...e}})
 }
 
-export {shuffleArray,copyBracket,copyMatch,createBracket,extractTeams}
+const findMatchByTeamID = (user,bracket) => {
+    //this should work with a reversed bracket, not a normal order one, i really dont get it, but well, it works
+    let matchFound = null
+    bracket.forEach((round) => {
+        round.forEach(match => {
+            if (match.teams.findIndex(team => team.id === user.id) !== -1) return matchFound = copyMatch(match)
+        })
+    })
+    return matchFound
+}
+
+const insertScore = (user,score,bracket) => {
+    const bracketCopy = copyBracket(bracket)
+
+    //searching for the last game of the current team
+    const match = findMatchByTeamID(user,bracket)
+    //inserting the score in the bracket
+    bracketCopy[match.crd[0]][match.crd[1]].setScoreByTeamID(user.id,score,bracketCopy)
+
+    return copyBracket(bracketCopy)
+}
+
+export {shuffleArray,copyBracket,copyMatch,createBracket,extractTeams,findMatchByTeamID,insertScore}
