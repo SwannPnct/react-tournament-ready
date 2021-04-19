@@ -84,7 +84,7 @@ const Tournament = props => {
 
 
   const handleSendClickedMatchData = crd => {
-    props.onClickMatch(copyMatch(bracket[crd[0]][crd[1]]));
+    if (props.onClickMatch) props.onClickMatch(copyMatch(bracket[crd[0]][crd[1]]));
   }; //inline styles
   //bracket inline style to create a dynamic height for the bracket
 
@@ -117,7 +117,14 @@ const Tournament = props => {
     bracketWidth: bracketStyle.width,
     roundsMargin: roundsStyle.margin,
     bracketLength: bracket.length,
-    handleClickOnMatchFromParent: crd => handleSendClickedMatchData(crd)
+    handleClickOnMatchFromParent: crd => handleSendClickedMatchData(crd),
+    gamesStyle: props.gamesStyle,
+    teamGamesStyle: props.teamGamesStyle,
+    gamesDivStyleTop: props.gamesDivStyleTop,
+    gamesDivStyleBottom: props.gamesDivStyleBottom,
+    gamesDivStyleLeft: props.gamesDivStyleLeft,
+    gamesDivStyleRight: props.gamesDivStyleRight,
+    winningScoreStyle: props.winningScoreStyle
   }))));
   return /*#__PURE__*/React.createElement("div", {
     style: bracketStyle

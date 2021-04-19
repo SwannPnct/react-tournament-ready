@@ -134,6 +134,13 @@ const Tournament = (props) => {
                     roundsMargin={roundsStyle.margin}
                     bracketLength={bracket.length}
                     handleClickOnMatchFromParent={(crd) => handleSendClickedMatchData(crd)}
+                    gamesStyle={props.gamesStyle}
+                    teamGamesStyle={props.teamGamesStyle}
+                    gamesDivStyleTop={props.gamesDivStyleTop}
+                    gamesDivStyleBottom={props.gamesDivStyleBottom}
+                    gamesDivStyleLeft={props.gamesDivStyleLeft}
+                    gamesDivStyleRight={props.gamesDivStyleRight}
+                    winningScoreStyle={props.winningScoreStyle}
                 />
             ))}
         </div>

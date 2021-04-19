@@ -3,7 +3,7 @@
 * [Description](#description)
 * [Installation](#installation)
 * [Usage](#usage)
-* [Attributes and examples](#attributes-and-examples)
+* [Usage props and examples](#usage-props-and-examples)
     * [team and teams](#team-and-teams)
     * [insertScore](#insertScore)
     * [getMatchData](#getMatchData)
@@ -12,11 +12,14 @@
     * [loadBracketData](#loadBracketData)
 * [Helpers](#helpers)
     * [createBracket](#createBracket)
+* [Style props](#style-props)
+* [To-Do](#to-do)
+* [Releases](#releases)
 
 ## Description
 
-GitHub : https://github.com/SwannPnct/react-tournament-ready
-npm : https://www.npmjs.com/package/react-tournament-ready
+- GitHub : https://github.com/SwannPnct/react-tournament-ready
+- npm : https://www.npmjs.com/package/react-tournament-ready
 
 A React Module to create a tournament bracket with any number of participant from a minimal input.
 For the participants to advance, simply insert scores.
@@ -41,7 +44,7 @@ const App = () => {
 }
 ```
 
-## Attributes and examples
+## Usage props and examples
 
 ### team and teams
 ***required for the bracket generation***
@@ -222,11 +225,98 @@ const newBracket = createBracket(teams)
 
 ```
 
+## Style props
+
+### gamesStyle
+
+Default:
+```
+{
+    width: "150px",
+    backgroundColor: "#EEEEEE",
+    marginTop: "10px",
+    marginBottom: "10px",
+    border: "1px solid black",
+    borderRadius: "10px",
+    padding: "5px"
+}
+```
+
+### teamGamesStyle
+
+Default:
+```
+{
+    width: "150px",
+    backgroundColor: "#B4FFB7",
+    marginTop: "10px",
+    marginBottom: "10px",
+    border: "1px solid black",
+    borderRadius: "10px",
+    padding: "5px"
+}
+```
+
+### gamesDivStyleTop
+
+Default:
+```
+{
+    textAlign: "center",
+    padding: "5px",
+    height: "20px",
+    borderBottom: "1px solid black",
+    display : "grid",
+    gridTemplateColumns: "3fr 1fr"
+}
+```
+
+### gamesDivStyleBottom
+
+Default:
+```
+{
+    textAlign: "center",
+    padding: "5px",
+    height: "20px",
+    display : "grid",
+    gridTemplateColumns: "3fr 1fr"
+}
+```
+
+### gamesDivStyleLeft
+
+Default:
+```
+{
+    borderRight: "1px solid black"
+}
+```
+
+### gamesDivStyleRight
+
+Default:
+```
+{
+    //empty
+}
+```
+
+### winningScoreStyle
+
+Default:
+```
+{
+    fontWeight: "700"
+}
+```
+
+
 # To-Do
 
 - [ ] Allow score to be inserted with any other teamID without having to update the current user/team state
-- [ ] Fix useEffect missing dependencies warning
-- [ ] Customizable style ( props to inline styles )
+- [ ] UI : Fix useEffect missing dependencies warning
+- [x] Customizable style ( props to inline styles )
 - [ ] Find a way to simplify data extraction and insertion for an easier compliance with DB models
 - [ ] UI : Center automatically tournament view on the user match
 - [ ] UI : Connect the matches with lines to make a more logical bracket and easier to read
@@ -238,12 +328,19 @@ const newBracket = createBracket(teams)
 # Releases
 
 ### 1.0.0 to 1.0.3
-npm publishing, readme change and publishing bug fixes
+* npm publishing
+* readme change
+* publishing bug fixes
 
 ### 1.0.4
-exported bracket generation function so it be usable as a helper for an usage outside of the component
+* exported bracket generation function so it be usable as a helper for an usage outside of the component
 
 ### 1.0.5 to 1.0.7
-bracket handling for 1 or 2 teams, removed unused dependencies
+* bracket handling for 1 or 2 teams
+* removed unused dependencies
+
+### 1.0.8
+* style is now customizable, limited to the games only
+* fix props.onClickMatch is not a function
 
 

@@ -9,9 +9,19 @@ const Game = (props) => {
 
     //inline styles
     
-    const gamesStyle = {
+    const gamesStyle = props.gamesStyle ? props.gamesStyle : {
         width: "150px",
-        backgroundColor: team ? "#B4FFB7" :"#EEEEEE",
+        backgroundColor: "#EEEEEE",
+        marginTop: "10px",
+        marginBottom: "10px",
+        border: "1px solid black",
+        borderRadius: "10px",
+        padding: "5px"
+    }
+
+    const teamGamesStyle = props.teamGamesStyle ? props.teamGamesStyle : {
+        width: "150px",
+        backgroundColor: "#B4FFB7",
         marginTop: "10px",
         marginBottom: "10px",
         border: "1px solid black",
@@ -20,13 +30,13 @@ const Game = (props) => {
     }
 
     const emptyGamesStyle = {
-        width: "150px",
-        marginTop: "10px",
-        marginBottom: "10px",
+        width: parseInt(gamesStyle.width)+"px",
+        marginTop: parseInt(gamesStyle.marginTop)+"px",
+        marginBottom: parseInt(gamesStyle.marginBottom)+"px",
         opacity: "0%"
     }
 
-    const gamesDivStyleTop = {
+    const gamesDivStyleTop = props.gamesDivStyleTop ? props.gamesDivStyleTop : {
         textAlign: "center",
         padding: "5px",
         height: "20px",
@@ -36,7 +46,7 @@ const Game = (props) => {
         gridTemplateColumns: "3fr 1fr"
     }
 
-    const gamesDivStyleBottom = {
+    const gamesDivStyleBottom = props.gamesDivStyleBottom ? props.gamesDivStyleBottom : {
         textAlign: "center",
         padding: "5px",
         height: "20px",
@@ -45,11 +55,15 @@ const Game = (props) => {
         gridTemplateColumns: "3fr 1fr"
     }
 
-    const leftDivStyle = {
+    const gamesDivStyleLeft = props.gamesDivStyleLeft ? props.gamesDivStyleLeft : {
         borderRight: "1px solid black"
     }
 
-    const winningScoreStyle = {
+    const gamesDivStyleRight = props.gamesDivStyleRight ? props.gamesDivStyleRight : {
+        
+    } 
+
+    const winningScoreStyle = props.winningScoreStyle ? props.winningScoreStyle : {
         fontWeight: "700"
     }
 
@@ -62,14 +76,14 @@ const Game = (props) => {
     return (
         <div>
             {props.crd[0] ===  props.bracketLength -1 ? (<h3 style={finaleTextStyle}>Final</h3>) : null}
-            <div onClick={() => props.handleClickOnMatchFromParent(props.crd)} style={props.crd[0] === 0 && !props.teams[0].id ? emptyGamesStyle : gamesStyle}>
+            <div onClick={() => props.handleClickOnMatchFromParent(props.crd)} style={props.crd[0] === 0 && !props.teams[0].id ? emptyGamesStyle : team ? teamGamesStyle : gamesStyle}>
                 <div style={gamesDivStyleTop}>
-                    <div style={leftDivStyle}>{props.teams[0].name}</div>
-                    <div style={props.score[0] > props.score[1] ? winningScoreStyle : {}}>{props.score[0]}</div>
+                    <div style={gamesDivStyleLeft}>{props.teams[0].name}</div>
+                    <div style={{...gamesDivStyleRight, ...(props.score[0] > props.score[1] ? winningScoreStyle : {})}}>{props.score[0]}</div>
                 </div>
                 <div style={gamesDivStyleBottom}>
-                    <div style={leftDivStyle}>{props.teams[1].name}</div>
-                    <div style={props.score[1] > props.score[0] ? winningScoreStyle : {}}>{props.score[1]}</div>
+                    <div style={gamesDivStyleLeft}>{props.teams[1].name}</div>
+                    <div style={{...gamesDivStyleRight, ...(props.score[1] > props.score[0] ? winningScoreStyle : {})}}>{props.score[1]}</div>
                 </div>
             </div>
         </div>
