@@ -12,7 +12,7 @@
     * [loadBracketData](#loadBracketData)
 * [Helpers](#helpers)
     * [createBracket](#createBracket)
-    * [insertScore](#insertScore)
+    * [insertScore (h)](#insertScore-(h))
 * [Style props](#style-props)
 * [To-Do](#to-do)
 * [Releases](#releases)
@@ -213,7 +213,7 @@ useEffect(() => {
 `(teams)`
 
 ```
-import createBracket from 'react-tournament-ready/dist/helpers'
+import {createBracket} from 'react-tournament-ready/dist/helpers'
 
 //same format as team/teams
 const teams = [
@@ -227,11 +227,11 @@ const newBracket = createBracket(teams)
 
 ```
 
-### insertScore
+### insertScore (h)
 `(user,score,bracket)`
 
 ```
-import insertScore from 'react-tournament-ready/dist/helpers'
+import {createBracket,insertScore} from 'react-tournament-ready/dist/helpers'
 
 const teams = [
     {
@@ -347,7 +347,7 @@ Default:
 
 # Releases
 
-### 1.0.9
+### 1.0.9 to 1.1.0
 * externalized insert score function, as a helper
 * externalized find match by team id, as a helper
 
