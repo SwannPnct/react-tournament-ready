@@ -98,7 +98,7 @@ const Tournament = (props) => {
 
     //sending clicked match data
     const handleSendClickedMatchData = (crd) => {
-        props.onClickMatch(copyMatch(bracket[crd[0]][crd[1]]))
+        if (props.onClickMatch) props.onClickMatch(copyMatch(bracket[crd[0]][crd[1]])) 
     }
 
     //inline styles

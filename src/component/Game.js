@@ -20,7 +20,7 @@ const Game = (props) => {
     }
 
     const emptyGamesStyle = {
-        width: "100px",
+        width: "150px",
         marginTop: "10px",
         marginBottom: "10px",
         opacity: "0%"
