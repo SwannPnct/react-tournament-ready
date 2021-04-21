@@ -34,7 +34,7 @@ For the participants to advance, simply insert scores.
 ## Usage
 
 ```
-import Tournament from 'react-tournament-ready/dist/Tournament'
+import Tournament from 'react-tournament-ready'
 
 const App = () => {
     return (
@@ -213,7 +213,7 @@ useEffect(() => {
 `(teams)`
 
 ```
-import {createBracket} from 'react-tournament-ready/dist/helpers'
+import {createBracket} from 'react-tournament-ready'
 
 //same format as team/teams
 const teams = [
@@ -231,7 +231,7 @@ const newBracket = createBracket(teams)
 `(user,score,bracket)`
 
 ```
-import {createBracket,insertScore} from 'react-tournament-ready/dist/helpers'
+import {createBracket,insertScore} from 'react-tournament-ready'
 
 const teams = [
     {
@@ -340,12 +340,18 @@ Default:
 - [ ] Find a way to simplify data extraction and insertion for an easier compliance with DB models
 - [ ] UI : Center automatically tournament view on the user match
 - [ ] UI : Connect the matches with lines to make a more logical bracket and easier to read
-- [ ] Make the component usable from ‘react-tournament-ready’ and not from the dist folder ( use of rollup pck)
+- [x] Make the component usable from ‘react-tournament-ready’ and not from the dist folder
 - [ ] Make the component props automatically showing as hints to help with usage
 - [x] Make generate bracket function usable without using the component ( help for backend)
 - [x] Bracket handling for 1 or 2 teams ( does not work at all for now)
 
 # Releases
+
+### 1.1.1
+* added index.js as main file to export all modules
+* added exports field in package json to configure absolute imports
+* change publish scripts to it does include whole src directory
+* updated documentation
 
 ### 1.0.9 to 1.1.0
 * externalized insert score function, as a helper

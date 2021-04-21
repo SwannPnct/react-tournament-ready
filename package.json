@@ -1,8 +1,9 @@
 {
   "name": "react-tournament-ready",
   "description": "React component to generate a tournament bracket with simple inputs.",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": false,
+  "main": "./dist/index.js",
   "babel": {
     "presets": [
       "@babel/preset-react"
@@ -20,7 +21,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "publish:npm": "rm -rf dist && mkdir dist &&  babel src/component -d dist --copy-files"
+    "publish:npm": "rm -rf dist && mkdir dist &&  babel src -d dist --copy-files"
   },
   "eslintConfig": {
     "extends": [
